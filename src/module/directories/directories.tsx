@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { getFiles } from "../../api/getFiles";
-
-type File = {
-  name: string,
-  time: number
-}
+import { File } from "../../model/File";
+import { Picture } from "../picture/picture";
 
 type props = {
   directory: string
@@ -25,7 +22,10 @@ export const Directories = (props: props) => {
     setDirectory(`${directory}/${nestedDirectoryName}`)
   }
 
-  return (
+  console.log(files.length, isPicture(files), files.length && isPicture(files))
+  return files.length && isPicture(files) ?
+  (<Picture directory={directory} files={files} />)
+  :(
     <>
       <ul>
       {
@@ -35,6 +35,13 @@ export const Directories = (props: props) => {
       }
       </ul>
     </>
-  );
+  )
 };
 
+const isPicture = (files: File[]): boolean => {
+  if (files.length === 0) {
+    return false;
+  } 
+  const pictureFileExtensions = ["jpeg", "jpg", "png"]
+  return pictureFileExtensions.filter((pictureFileExtension) => files[0].name.includes(pictureFileExtension)).length > 0
+}
