@@ -1,13 +1,27 @@
+/* 変数定義 */
+:root {
+  --header-menu-height: 1px;
+  --navigate-left-right-width: 80px;
+}
+
+.pictureCover {
+  display: flex;
+  width: 98vw;
+}
+
 .picture {
   position: relative;
-  height: calc(100vh - 80px);
+  /* height: calc(98vh - var(--header-menu-height)); */
+  height: 98vh;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .navigateArea {
-  height: calc(100vh - 80px);
-  width: 100vw;
+  height: calc(98vh - var(--header-menu-height));
+  width: 98vw;
   margin: 0, 0, 0, 0;
-  top: 80px;
+  top: var(--header-menu-height);
   left: 0;
   display: flex;
   position: absolute;
@@ -24,9 +38,7 @@
 .nextArea {
   height: 100%;
   width: 80px;
-  margin-left: auto;
   background-color: rgba(255, 0, 0, 0.3);
-  /* position: relative; */
 }
 
 .directoryArea {
@@ -35,7 +47,7 @@
 
 .prevDirectoryArea {
   height: 80px;
-  width: calc(100vw - 160px);
+  width: calc(100vw - var(--navigate-left-right-width) * 2 - 40px);
   margin: 0;
   background-color: rgba(0, 255, 0, 0.3);
 }
@@ -46,7 +58,6 @@
 
 .nextDirectoryArea {
   height: 80px;
-  width: calc(100vw - 160px);
-  position: relative;
+  width: calc(100vw - var(--navigate-left-right-width) * 2 - 40px);
   background-color: rgba(0, 255, 0, 0.3);
 }
