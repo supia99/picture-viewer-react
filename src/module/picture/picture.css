@@ -1,0 +1,52 @@
+.picture {
+  position: relative;
+  height: calc(100vh - 80px);
+}
+
+.navigateArea {
+  height: calc(100vh - 80px);
+  width: 100vw;
+  margin: 0, 0, 0, 0;
+  top: 80px;
+  left: 0;
+  display: flex;
+  position: absolute;
+  background-color: rgba(0, 0, 255, 0.3);
+}
+
+.prevArea {
+  height: 100%;
+  width: 80px;
+  left: 0px;
+  background-color: rgba(255, 0, 0, 0.3);
+}
+
+.nextArea {
+  height: 100%;
+  width: 80px;
+  margin-left: auto;
+  background-color: rgba(255, 0, 0, 0.3);
+  /* position: relative; */
+}
+
+.directoryArea {
+  background-color: rgba(0, 255, 255, 0.3);
+}
+
+.prevDirectoryArea {
+  height: 80px;
+  width: calc(100vw - 160px);
+  margin: 0;
+  background-color: rgba(0, 255, 0, 0.3);
+}
+
+.middleArea {
+  height: calc(100% - 160px);
+}
+
+.nextDirectoryArea {
+  height: 80px;
+  width: calc(100vw - 160px);
+  position: relative;
+  background-color: rgba(0, 255, 0, 0.3);
+}
