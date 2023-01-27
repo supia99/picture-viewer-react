@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { File } from "../../model/File";
 import "./picture.css";
 
@@ -7,6 +7,7 @@ type props = {
   files: File[];
   nextDirectory: (arg0: string, arg1: any) => void;
   prevDirectory: (arg0: string, arg1: any) => void;
+  fileNo?: number;
 };
 
 export const Picture = ({
@@ -16,7 +17,18 @@ export const Picture = ({
   prevDirectory,
 }: props) => {
   const [fileNo, setFileNo] = useState(0);
-  const src = `${import.meta.env.VITE_FILE_BASE_URL}/hTufNas${directory}/${
+  const [isSlideShow, setIsSlideShow] = useState(false);
+  useEffect(() => {
+    const waitTime = 1 * 1000;
+    if (isSlideShow) {
+      window.setTimeout(() => {
+        nextFile();
+      }, waitTime);
+    }
+  }, [fileNo]);
+
+  console.log(`描画 ${isSlideShow}`);
+  const src = `${import.meta.env.VITE_FILE_BASE_URL}/sdb${directory}/${
     files[fileNo].name
   }`;
 
@@ -27,25 +39,48 @@ export const Picture = ({
     setFileNo(fileNo - 1);
   };
 
+  const onOffSlideShow = () => {
+    console.log("run slideShow");
+    if (isSlideShow) {
+      setIsSlideShow(false);
+      console.log("slideShow off");
+      return;
+    }
+    console.log("slideShow on");
+    setIsSlideShow(true);
+    nextFile();
+  };
+
   return (
     <>
       <div className="pictureCover">
         <img src={src} className="picture" />
       </div>
       <div className="navigateArea">
-        <div className="prevArea" onClick={prevFile}></div>
+        <div
+          className="prevArea"
+          onClick={(e) =>
+            fileNo === 0 ? prevDirectory(directory, e) : prevFile()
+          }
+        ></div>
         <div className="directoryArea">
           <div
             className="prevDirectoryArea"
             onClick={(e) => prevDirectory(directory, e)}
           ></div>
-          <div className="middleArea"></div>
+          <div className="middleArea" onClick={onOffSlideShow}></div>
           <div
             className="nextDirectoryArea"
+            id="nextDirectoryArea"
             onClick={(e) => nextDirectory(directory, e)}
           ></div>
         </div>
-        <div className="nextArea" onClick={nextFile}></div>
+        <div
+          className="nextArea"
+          onClick={(e) =>
+            fileNo === files.length ? nextDirectory(directory, e) : nextFile()
+          }
+        ></div>
       </div>
     </>
   );
