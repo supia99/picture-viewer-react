@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { File } from "../../model/File";
 import "./picture.css";
 
@@ -19,6 +19,7 @@ export const Picture = ({
 }: props) => {
   const [fileNo, setFileNo] = useState(0);
   const [isSlideShow, setIsSlideShow] = useState(false);
+  const pictureModuleRef = useRef(null);
   useEffect(() => {
     const waitTime = 1 * 1000;
     if (isSlideShow) {
@@ -26,6 +27,8 @@ export const Picture = ({
         nextFile();
       }, waitTime);
     }
+    //TODO: 表示時に選択状態にしないと、キーボード操作が聞かなかったような気がする
+    (pictureModuleRef.current! as any).focus();
   }, [fileNo]);
   useEffect(() => {
     setFileNo(firstOrLast === "first" ? 0 : files.length - 1);
@@ -54,8 +57,26 @@ export const Picture = ({
     nextFile();
   };
 
+  // TODO: anyを解決する
+  const keyOperation = (e: any) => {
+    switch (e.key) {
+      case "ArrowLeft":
+        fileNo === 0 ? prevDirectory(directory, e) : prevFile();
+        break;
+      case "ArrowRight":
+        fileNo === files.length - 1 ? nextDirectory(directory, e) : nextFile();
+        break;
+      case "ArrowUp":
+        prevDirectory(directory, e);
+        break;
+      case "ArrowDown":
+        nextDirectory(directory, e);
+        break;
+    }
+  };
+
   return (
-    <>
+    <div onKeyDown={(e) => keyOperation(e)} tabIndex={0} ref={pictureModuleRef}>
       <div className="pictureCover">
         <img src={src} className="picture" />
       </div>
@@ -87,6 +108,6 @@ export const Picture = ({
           }
         ></div>
       </div>
-    </>
+    </div>
   );
 };
