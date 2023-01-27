@@ -7,7 +7,7 @@ type props = {
   files: File[];
   nextDirectory: (arg0: string, arg1: any) => void;
   prevDirectory: (arg0: string, arg1: any) => void;
-  fileNo?: number;
+  firstOrLast: "first" | "last";
 };
 
 export const Picture = ({
@@ -15,6 +15,7 @@ export const Picture = ({
   files,
   nextDirectory,
   prevDirectory,
+  firstOrLast,
 }: props) => {
   const [fileNo, setFileNo] = useState(0);
   const [isSlideShow, setIsSlideShow] = useState(false);
@@ -26,8 +27,10 @@ export const Picture = ({
       }, waitTime);
     }
   }, [fileNo]);
+  useEffect(() => {
+    setFileNo(firstOrLast === "first" ? 0 : files.length - 1);
+  }, []);
 
-  console.log(`描画 ${isSlideShow}`);
   const src = `${import.meta.env.VITE_FILE_BASE_URL}/sdb${directory}/${
     files[fileNo].name
   }`;
@@ -78,7 +81,9 @@ export const Picture = ({
         <div
           className="nextArea"
           onClick={(e) =>
-            fileNo === files.length ? nextDirectory(directory, e) : nextFile()
+            fileNo === files.length - 1
+              ? nextDirectory(directory, e)
+              : nextFile()
           }
         ></div>
       </div>

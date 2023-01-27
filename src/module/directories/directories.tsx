@@ -11,6 +11,9 @@ type props = {
 export const Directories = ({ directory, setDirectory }: props) => {
   console.log(`Directories ${directory}`);
   const [files, setFiles] = useState([] as File[]);
+  const [firstOrLastPage, setFirstOrLastPage] = useState(
+    "first" as "first" | "last"
+  );
 
   useEffect(() => {
     getFiles(directory, "-time").then((response) => {
@@ -38,6 +41,7 @@ export const Directories = ({ directory, setDirectory }: props) => {
       const fileNo = responseFiles.findIndex((file) => {
         return file.name === lastDirectoryName;
       });
+      setFirstOrLastPage("first");
       setDirectory(`${oneHigherDirectory}/${responseFiles[fileNo + 1].name}`);
     });
   };
@@ -52,6 +56,7 @@ export const Directories = ({ directory, setDirectory }: props) => {
       const fileNo = responseFiles.findIndex((file) => {
         return file.name === lastDirectoryName;
       });
+      setFirstOrLastPage("last");
       setDirectory(`${oneHigherDirectory}/${responseFiles[fileNo - 1].name}`);
     });
   };
@@ -62,6 +67,7 @@ export const Directories = ({ directory, setDirectory }: props) => {
       files={files}
       nextDirectory={nextDirectory}
       prevDirectory={prevDirectory}
+      firstOrLast={firstOrLastPage}
     />
   ) : (
     <>
