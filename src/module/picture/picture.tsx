@@ -19,7 +19,9 @@ export const Picture = ({
 }: props) => {
   const [fileNo, setFileNo] = useState(0);
   const [isSlideShow, setIsSlideShow] = useState(false);
+  const [pictureClassName, setPictureClassName] = useState("widthFullPicture");
   const pictureModuleRef = useRef(null);
+  const pictureRef = useRef(null);
   useEffect(() => {
     const waitTime = 1 * 1000;
     if (isSlideShow) {
@@ -27,7 +29,24 @@ export const Picture = ({
         nextFile();
       }, waitTime);
     }
-    //TODO: 表示時に選択状態にしないと、キーボード操作が聞かなかったような気がする
+    // TODO: anyを解決する
+    let pictureNatureHeight = (pictureRef.current as any).naturalHeight;
+    let pictureNatureWidth = (pictureRef.current as any).naturalWidth;
+    console.log(
+      window.innerHeight,
+      window.innerWidth,
+      pictureNatureHeight,
+      pictureNatureWidth
+    );
+    if (
+      window.innerHeight / window.innerWidth <
+      pictureNatureHeight / pictureNatureWidth
+    ) {
+      setPictureClassName("widthFullPicture");
+    } else {
+      setPictureClassName("heightFullPicture");
+    }
+    // TODO: anyを解決する
     (pictureModuleRef.current! as any).focus();
   }, [fileNo]);
   useEffect(() => {
@@ -78,7 +97,7 @@ export const Picture = ({
   return (
     <div onKeyDown={(e) => keyOperation(e)} tabIndex={0} ref={pictureModuleRef}>
       <div className="pictureCover">
-        <img src={src} className="picture" />
+        <img src={src} className="widthFullPicture" ref={pictureRef} />
       </div>
       <div className="navigateArea">
         <div

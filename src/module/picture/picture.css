@@ -6,13 +6,22 @@
 
 .pictureCover {
   display: flex;
+  height: 98vh;
   width: 98vw;
+  align-items: center;
 }
 
-.picture {
-  position: relative;
-  /* height: calc(98vh - var(--header-menu-height)); */
+.heightFullPicture {
   height: 98vh;
+  /* position: relative; */
+  /* height: calc(98vh - var(--header-menu-height)); */
+  margin-left: auto;
+  margin-right: auto;
+}
+.widthFullPicture {
+  width: 98vw;
+  /* position: relative; */
+  /* height: calc(98vh - var(--header-menu-height)); */
   margin-left: auto;
   margin-right: auto;
 }
