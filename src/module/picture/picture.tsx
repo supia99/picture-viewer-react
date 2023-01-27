@@ -91,6 +91,9 @@ export const Picture = ({
       case "ArrowDown":
         nextDirectory(directory, e);
         break;
+      case "a":
+        onOffSlideShow();
+        break;
     }
   };
 
