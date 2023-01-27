@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview --port 5173 --host 192.168.50.242"
   },
   "dependencies": {
     "axios": "^1.2.3",
