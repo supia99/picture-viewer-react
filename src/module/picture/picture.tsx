@@ -23,7 +23,7 @@ export const Picture = ({
   const pictureModuleRef = useRef(null);
   const pictureRef = useRef(null);
   useEffect(() => {
-    const waitTime = 1 * 1000;
+    const waitTime = 2 * 1000;
     if (isSlideShow) {
       window.setTimeout(() => {
         nextFile();
@@ -64,6 +64,7 @@ export const Picture = ({
     setFileNo(fileNo - 1);
   };
 
+  //TODO: slideShowモードで起動時にnextFile(), prevFile()を実行するとバグるのを解決する
   const onOffSlideShow = () => {
     console.log("run slideShow");
     if (isSlideShow) {
