@@ -17,11 +17,18 @@ export const Picture = ({
   prevDirectory,
   firstOrLast,
 }: props) => {
-  const [fileNo, setFileNo] = useState(0);
+  const [fileNo, set] = useState(0);
   const [isSlideShow, setIsSlideShow] = useState(false);
-  const [pictureClassName, setPictureClassName] = useState("widthFullPicture");
+  const [imageStyle, setImageStyle] = useState({ background: "" });
+  const setFileNo = (no: number) => {
+    set(no);
+    setImageStyle({
+      background: `center / contain no-repeat url("${
+        import.meta.env.VITE_FILE_BASE_URL
+      }/sdb${directory}/${files[fileNo].name}")`,
+    });
+  };
   const pictureModuleRef = useRef(null);
-  const pictureRef = useRef(null);
   useEffect(() => {
     const waitTime = 2 * 1000;
     if (isSlideShow) {
@@ -29,30 +36,13 @@ export const Picture = ({
         nextFile();
       }, waitTime);
     }
-    // TODO: anyを解決する
-    let pictureNatureHeight = (pictureRef.current as any).naturalHeight;
-    let pictureNatureWidth = (pictureRef.current as any).naturalWidth;
-    console.log(
-      window.innerHeight,
-      window.innerWidth,
-      pictureNatureHeight,
-      pictureNatureWidth
-    );
-    if (
-      window.innerHeight / window.innerWidth <
-      pictureNatureHeight / pictureNatureWidth
-    ) {
-      setPictureClassName("widthFullPicture");
-    } else {
-      setPictureClassName("heightFullPicture");
-    }
+    console.log(`imageStyle: ${imageStyle.background}`);
     // TODO: anyを解決する
     (pictureModuleRef.current! as any).focus();
   }, [fileNo]);
   useEffect(() => {
     setFileNo(firstOrLast === "first" ? 0 : files.length - 1);
   }, []);
-
   const src = `${import.meta.env.VITE_FILE_BASE_URL}/sdb${directory}/${
     files[fileNo].name
   }`;
@@ -99,11 +89,14 @@ export const Picture = ({
   };
 
   return (
-    <div onKeyDown={(e) => keyOperation(e)} tabIndex={0} ref={pictureModuleRef}>
-      <div className="pictureCover">
-        <img src={src} className="widthFullPicture" ref={pictureRef} />
-      </div>
-      <div className="navigateArea">
+    <div
+      className="pictureModule"
+      onKeyDown={(e) => keyOperation(e)}
+      tabIndex={0}
+      ref={pictureModuleRef}
+    >
+      <img src={src} className="fullPicture" />
+      <div className="navigateArea" style={imageStyle}>
         <div
           className="prevArea"
           onClick={(e) =>
@@ -118,7 +111,6 @@ export const Picture = ({
           <div className="middleArea" onClick={onOffSlideShow}></div>
           <div
             className="nextDirectoryArea"
-            id="nextDirectoryArea"
             onClick={(e) => nextDirectory(directory, e)}
           ></div>
         </div>
