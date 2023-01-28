@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { deleteDirectory } from "../../api/deleteDirectory";
 import { File } from "../../model/File";
 import "./picture.css";
 
@@ -36,7 +37,6 @@ export const Picture = ({
         nextFile();
       }, waitTime);
     }
-    console.log(`imageStyle: ${imageStyle.background}`);
     // TODO: anyを解決する
     (pictureModuleRef.current! as any).focus();
   }, [fileNo]);
@@ -69,6 +69,7 @@ export const Picture = ({
 
   // TODO: anyを解決する
   const keyOperation = (e: any) => {
+    console.log(`e.key: ${e.key}`);
     switch (e.key) {
       case "ArrowLeft":
         fileNo === 0 ? prevDirectory(directory, e) : prevFile();
@@ -84,6 +85,11 @@ export const Picture = ({
         break;
       case "a":
         onOffSlideShow();
+        break;
+      case "Delete":
+        // TODO: 削除時に次のディレクトリに移動させることに失敗している
+        nextDirectory(directory, e);
+        deleteDirectory(directory);
         break;
     }
   };
