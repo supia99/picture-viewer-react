@@ -34,6 +34,11 @@ export const Picture = ({
     });
   };
   const pictureModuleRef = useRef(null);
+  const src = `${import.meta.env.VITE_FILE_BASE_URL}/sdb${directory}/${
+    files[fileNo].name
+  }`;
+  console.log(`src: ${src}`);
+
   useEffect(() => {
     //TODO: SlideWaitTimeContextを取得しようとするとエラーになる
     // fileNoを書き換えるたびにuseEffectが呼ばれる想定だったが、そうではない？
@@ -49,10 +54,6 @@ export const Picture = ({
   useEffect(() => {
     setFileNo(firstOrLast === "first" ? 0 : files.length - 1);
   }, []);
-  const src = `${import.meta.env.VITE_FILE_BASE_URL}/sdb${directory}/${
-    files[fileNo].name
-  }`;
-  console.log(`src: ${src}`);
 
   const nextFile = () => {
     setFileNo(fileNo + 1);
