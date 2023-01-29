@@ -24,6 +24,8 @@ export const Picture = ({
   );
   const [isSlideShow, setIsSlideShow] = useState(false);
   const [imageStyle, setImageStyle] = useState({ background: "" });
+  const slideShowWaitTime = useContext(SlideWaitTimeContext);
+  console.log(`slideShowWaitTime: ${slideShowWaitTime}`);
   const setFileNo = (no: number) => {
     set(no);
     setImageStyle({
@@ -36,17 +38,8 @@ export const Picture = ({
   useEffect(() => {
     //TODO: SlideWaitTimeContextを取得しようとするとエラーになる
     // fileNoを書き換えるたびにuseEffectが呼ばれる想定だったが、そうではない？
-    try {
-      console.log(
-        `useContext(SlideWaitTimeContext):${useContext(SlideWaitTimeContext)}`
-      );
-    } catch {
-      (error: Error) => {
-        console.log(error);
-      };
-    }
     if (isSlideShow) {
-      const waitTime = 3 * 1000;
+      const waitTime = slideShowWaitTime * 1000;
       window.setTimeout(() => {
         nextFile();
       }, waitTime);
