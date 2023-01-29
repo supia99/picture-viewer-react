@@ -25,7 +25,6 @@ export const Picture = ({
   const [isSlideShow, setIsSlideShow] = useState(false);
   const [imageStyle, setImageStyle] = useState({ background: "" });
   const slideShowWaitTime = useContext(SlideWaitTimeContext);
-  console.log(`slideShowWaitTime: ${slideShowWaitTime}`);
   const setFileNo = (no: number) => {
     set(no);
     setImageStyle({
