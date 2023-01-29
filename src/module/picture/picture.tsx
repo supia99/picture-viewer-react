@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { deleteDirectory } from "../../api/deleteDirectory";
+import { SlideWaitTimeContext } from "../../App";
 import { File } from "../../model/File";
 import "./picture.css";
 
@@ -18,7 +19,9 @@ export const Picture = ({
   prevDirectory,
   firstOrLast,
 }: props) => {
-  const [fileNo, set] = useState(0);
+  const [fileNo, set] = useState(
+    firstOrLast === "first" ? 0 : files.length - 1
+  );
   const [isSlideShow, setIsSlideShow] = useState(false);
   const [imageStyle, setImageStyle] = useState({ background: "" });
   const setFileNo = (no: number) => {
@@ -31,8 +34,19 @@ export const Picture = ({
   };
   const pictureModuleRef = useRef(null);
   useEffect(() => {
-    const waitTime = 2 * 1000;
+    //TODO: SlideWaitTimeContextを取得しようとするとエラーになる
+    // fileNoを書き換えるたびにuseEffectが呼ばれる想定だったが、そうではない？
+    try {
+      console.log(
+        `useContext(SlideWaitTimeContext):${useContext(SlideWaitTimeContext)}`
+      );
+    } catch {
+      (error: Error) => {
+        console.log(error);
+      };
+    }
     if (isSlideShow) {
+      const waitTime = 3 * 1000;
       window.setTimeout(() => {
         nextFile();
       }, waitTime);
@@ -46,6 +60,7 @@ export const Picture = ({
   const src = `${import.meta.env.VITE_FILE_BASE_URL}/sdb${directory}/${
     files[fileNo].name
   }`;
+  console.log(`src: ${src}`);
 
   const nextFile = () => {
     setFileNo(fileNo + 1);
