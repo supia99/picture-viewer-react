@@ -1,6 +1,6 @@
 import { Dispatch, useContext, useState } from "react";
 import { SlideWaitTimeContext } from "../../App";
-// import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 import "./menu.css";
 
 type props = {
@@ -15,6 +15,7 @@ export const Menu = ({ setSlideWaitTime }: props) => {
       {/* {slideShowTime} */}
       {isShowMenu && (
         <div className="content">
+          <Link to="/">home</Link>
           <div className="slideShowTimeArea">
             <p>slide show time(s):</p>
             <input

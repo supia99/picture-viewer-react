@@ -1,59 +1,58 @@
 import { useContext, useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { deleteDirectory } from "../../api/deleteDirectory";
 import { SlideWaitTimeContext } from "../../App";
 import { File } from "../../model/File";
 import "./picture.css";
 
 type props = {
-  directory: string;
+  directoryPath: string;
   files: File[];
-  nextDirectory: (arg0: string, arg1: any) => void;
-  prevDirectory: (arg0: string, arg1: any) => void;
-  firstOrLast: "first" | "last";
+  nextDirectoryPath: string;
+  prevDirectoryPath: string;
 };
 
 export const Picture = ({
-  directory,
+  directoryPath,
   files,
-  nextDirectory,
-  prevDirectory,
-  firstOrLast,
+  nextDirectoryPath,
+  prevDirectoryPath,
 }: props) => {
-  const [fileNo, set] = useState(
-    firstOrLast === "first" ? 0 : files.length - 1
-  );
+  const [fileNo, set] = useState(0);
   const [isSlideShow, setIsSlideShow] = useState(false);
   const [imageStyle, setImageStyle] = useState({ background: "" });
   const slideShowWaitTime = useContext(SlideWaitTimeContext);
+  const navigate = useNavigate();
   const setFileNo = (no: number) => {
     set(no);
     setImageStyle({
       background: `center / contain no-repeat url("${
         import.meta.env.VITE_FILE_BASE_URL
-      }/sdb${directory}/${files[fileNo].name}")`,
+      }/sdb${directoryPath}/${files[fileNo].name}")`,
     });
   };
   const pictureModuleRef = useRef(null);
-  const src = `${import.meta.env.VITE_FILE_BASE_URL}/sdb${directory}/${
-    files[fileNo].name
-  }`;
-  console.log(`src: ${src}`);
 
   useEffect(() => {
-    //TODO: SlideWaitTimeContextを取得しようとするとエラーになる
-    // fileNoを書き換えるたびにuseEffectが呼ばれる想定だったが、そうではない？
     if (isSlideShow) {
       const waitTime = slideShowWaitTime * 1000;
+      const tmpFileNo = fileNo;
       window.setTimeout(() => {
-        nextFile();
+        tmpFileNo === fileNo && nextFile();
       }, waitTime);
     }
     // TODO: anyを解決する
     (pictureModuleRef.current! as any).focus();
+    setImageStyle({
+      background: `center / contain no-repeat url("${
+        import.meta.env.VITE_FILE_BASE_URL
+      }/sdb${directoryPath}/${files[fileNo].name}")`,
+    });
   }, [fileNo]);
+  let firstOrlastPage: "first" | "last" = "first";
   useEffect(() => {
-    setFileNo(firstOrLast === "first" ? 0 : files.length - 1);
-  }, []);
+    setFileNo(firstOrlastPage === "first" ? 0 : files.length - 1);
+  }, [directoryPath]);
 
   const nextFile = () => {
     setFileNo(fileNo + 1);
@@ -80,24 +79,33 @@ export const Picture = ({
     console.log(`e.key: ${e.key}`);
     switch (e.key) {
       case "ArrowLeft":
-        fileNo === 0 ? prevDirectory(directory, e) : prevFile();
+        if (fileNo === 0) {
+          navigate(prevDirectoryPath);
+        } else {
+          prevFile();
+        }
+
         break;
       case "ArrowRight":
-        fileNo === files.length - 1 ? nextDirectory(directory, e) : nextFile();
+        if (fileNo === files.length - 1) {
+          navigate(nextDirectoryPath);
+        } else {
+          nextFile();
+        }
         break;
       case "ArrowUp":
-        prevDirectory(directory, e);
+        navigate(prevDirectoryPath);
         break;
       case "ArrowDown":
-        nextDirectory(directory, e);
+        navigate(nextDirectoryPath);
         break;
       case "a":
         onOffSlideShow();
         break;
       case "Delete":
         // TODO: 削除時に次のディレクトリに移動させることに失敗している
-        nextDirectory(directory, e);
-        deleteDirectory(directory);
+        // nextDirectory(directory, e);
+        deleteDirectory(directoryPath);
         break;
     }
   };
@@ -109,33 +117,44 @@ export const Picture = ({
       tabIndex={0}
       ref={pictureModuleRef}
     >
-      <img src={src} className="fullPicture" />
       <div className="navigateArea" style={imageStyle}>
-        <div
-          className="prevArea"
-          onClick={(e) =>
-            fileNo === 0 ? prevDirectory(directory, e) : prevFile()
-          }
-        ></div>
+        {fileNo === 0 ? (
+          <Link
+            className="prevArea"
+            to={prevDirectoryPath}
+            onClick={() => (firstOrlastPage = "last")}
+          ></Link>
+        ) : (
+          <div className="prevArea" onClick={() => prevFile()}></div>
+        )}
         <div className="directoryArea">
-          <div
+          <Link
             className="prevDirectoryArea"
-            onClick={(e) => prevDirectory(directory, e)}
-          ></div>
+            to={prevDirectoryPath}
+            onClick={() => {
+              firstOrlastPage = "last";
+            }}
+          ></Link>
           <div className="middleArea" onClick={onOffSlideShow}></div>
-          <div
+          <Link
             className="nextDirectoryArea"
-            onClick={(e) => nextDirectory(directory, e)}
-          ></div>
+            to={nextDirectoryPath}
+            onClick={() => {
+              firstOrlastPage = "first";
+            }}
+          ></Link>
         </div>
-        <div
-          className="nextArea"
-          onClick={(e) =>
-            fileNo === files.length - 1
-              ? nextDirectory(directory, e)
-              : nextFile()
-          }
-        ></div>
+        {fileNo === files.length - 1 ? (
+          <Link
+            className="nextArea"
+            to={nextDirectoryPath}
+            onClick={() => {
+              firstOrlastPage = "first";
+            }}
+          ></Link>
+        ) : (
+          <div className="nextArea" onClick={() => nextFile()}></div>
+        )}
       </div>
     </div>
   );

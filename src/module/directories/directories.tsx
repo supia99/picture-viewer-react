@@ -1,81 +1,73 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getFiles } from "../../api/getFiles";
 import { File } from "../../model/File";
 import { Picture } from "../picture/picture";
 
 type props = {
-  directory: string;
-  setDirectory: React.Dispatch<React.SetStateAction<string>>;
+  path: string;
 };
 
-export const Directories = ({ directory, setDirectory }: props) => {
-  console.log(`Directories ${directory}`);
+export const Directories = ({ path }: props) => {
   const [files, setFiles] = useState([] as File[]);
   const [firstOrLastPage, setFirstOrLastPage] = useState(
     "first" as "first" | "last"
   );
+  const [nextDirectoryPath, setNextDirectoryPath] = useState("/");
+  const [prevDirectoryPath, setPrevDirectoryPath] = useState("/");
 
   useEffect(() => {
-    getFiles(directory, "-time").then((response) => {
+    getFiles(path || "/", "-time").then((response) => {
       setFiles(response);
     });
-    console.log("end useEffect");
-  }, [directory]);
 
-  const nestDirectory = (nestedDirectoryName: string, _e: any) => {
-    console.log("nestDirectory:", nestedDirectoryName);
-    if (directory === "/") {
-      setDirectory(`/${nestedDirectoryName}`);
-      return;
+    if (path !== "/") {
+      const oneHigherDirectoryPath = getOneHigherDirectoryPath(path);
+      const lastDirectoryName = decodeURI(
+        path.replace(oneHigherDirectoryPath, "").replace("/", "")
+      );
+      getFiles(oneHigherDirectoryPath, "-time").then(
+        (responseDirectoryNames) => {
+          const fileNo = responseDirectoryNames.findIndex((directory) => {
+            return directory.name === lastDirectoryName;
+          });
+          setNextDirectoryPath(
+            `${oneHigherDirectoryPath}/${
+              responseDirectoryNames[fileNo - 1].name
+            }`
+          );
+          setPrevDirectoryPath(
+            `${oneHigherDirectoryPath}/${
+              responseDirectoryNames[fileNo + 1].name
+            }`
+          );
+        }
+      );
     }
-    setDirectory(`${directory}/${nestedDirectoryName}`);
-  };
 
-  const nextDirectory = (nowDirectoryPath: string, _e: any) => {
-    const oneHigherDirectory = getOneHigherDirectoryPath(nowDirectoryPath);
-    const lastDirectoryName = nowDirectoryPath
-      .replace(oneHigherDirectory, "")
-      .replace("/", "");
-    getFiles(oneHigherDirectory, "-time").then((responseFiles) => {
-      setFiles(responseFiles);
-      const fileNo = responseFiles.findIndex((file) => {
-        return file.name === lastDirectoryName;
-      });
-      setFirstOrLastPage("first");
-      setDirectory(`${oneHigherDirectory}/${responseFiles[fileNo + 1].name}`);
-    });
-  };
+    console.log("end useEffect");
+  }, [path]);
 
-  const prevDirectory = (nowDirectoryPath: string, _e: any) => {
-    const oneHigherDirectory = getOneHigherDirectoryPath(nowDirectoryPath);
-    const lastDirectoryName = nowDirectoryPath
-      .replace(oneHigherDirectory, "")
-      .replace("/", "");
-    getFiles(oneHigherDirectory, "-time").then((responseFiles) => {
-      setFiles(responseFiles);
-      const fileNo = responseFiles.findIndex((file) => {
-        return file.name === lastDirectoryName;
-      });
-      setFirstOrLastPage("last");
-      setDirectory(`${oneHigherDirectory}/${responseFiles[fileNo - 1].name}`);
-    });
-  };
-
+  console.log("directoryes rendering");
   return files.length && isPicture(files) ? (
     <Picture
-      directory={directory}
+      directoryPath={path}
       files={files}
-      nextDirectory={nextDirectory}
-      prevDirectory={prevDirectory}
-      firstOrLast={firstOrLastPage}
+      nextDirectoryPath={nextDirectoryPath}
+      prevDirectoryPath={prevDirectoryPath}
     />
   ) : (
     <>
       <ul>
+        {path && <LiLinkReturn path={path} />}
         {files.map((file) => {
           return (
-            <li key={file.name} onClick={(e) => nestDirectory(file.name, e)}>
-              {file.name}
+            <li key={file.name}>
+              <Link
+                to={path === "/" ? `/${file.name}` : `${path}/${file.name}`}
+              >
+                {file.name}
+              </Link>
             </li>
           );
         })}
@@ -97,6 +89,7 @@ const isPicture = (files: File[]): boolean => {
 };
 
 const getOneHigherDirectoryPath = (directoryName: string) => {
+  // TODO: string.lastIndexOfを使うようにする
   const directoryNameSplited = directoryName.split("/");
   let directoryNameCobined = "";
   directoryNameSplited
@@ -106,4 +99,20 @@ const getOneHigherDirectoryPath = (directoryName: string) => {
     });
 
   return directoryNameCobined;
+};
+
+const LiLinkReturn = ({ path }: { path: string }) => {
+  if (!path || path === "/") {
+    return <></>;
+  }
+
+  return (
+    <li>
+      {path.includes("/") ? (
+        <Link to={path.substring(0, path.lastIndexOf("/"))}>..</Link>
+      ) : (
+        <Link to="/">..</Link>
+      )}
+    </li>
+  );
 };
