@@ -33,12 +33,12 @@ export const Directories = ({ path }: props) => {
           });
           setNextDirectoryPath(
             `${oneHigherDirectoryPath}/${
-              responseDirectoryNames[fileNo - 1].name
+              responseDirectoryNames[fileNo + 1].name
             }`
           );
           setPrevDirectoryPath(
             `${oneHigherDirectoryPath}/${
-              responseDirectoryNames[fileNo + 1].name
+              responseDirectoryNames[fileNo - 1].name
             }`
           );
         }

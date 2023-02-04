@@ -21,6 +21,9 @@ export const Picture = ({
   const [fileNo, set] = useState(0);
   const [isSlideShow, setIsSlideShow] = useState(false);
   const [imageStyle, setImageStyle] = useState({ background: "" });
+  const [firstOrlastPage, setFirstOrlastPage] = useState(
+    "first" as "first" | "last"
+  );
   const slideShowWaitTime = useContext(SlideWaitTimeContext);
   const navigate = useNavigate();
   const setFileNo = (no: number) => {
@@ -38,6 +41,7 @@ export const Picture = ({
       const waitTime = slideShowWaitTime * 1000;
       const tmpFileNo = fileNo;
       window.setTimeout(() => {
+        console.log(`slideShow tmpFileNo: ${tmpFileNo} fileNo: ${fileNo}`);
         tmpFileNo === fileNo && nextFile();
       }, waitTime);
     }
@@ -49,8 +53,9 @@ export const Picture = ({
       }/sdb${directoryPath}/${files[fileNo].name}")`,
     });
   }, [fileNo]);
-  let firstOrlastPage: "first" | "last" = "first";
+
   useEffect(() => {
+    console.log(`firstOrlastPage ${firstOrlastPage}`);
     setFileNo(firstOrlastPage === "first" ? 0 : files.length - 1);
   }, [directoryPath]);
 
@@ -80,23 +85,26 @@ export const Picture = ({
     switch (e.key) {
       case "ArrowLeft":
         if (fileNo === 0) {
+          setFirstOrlastPage("last");
           navigate(prevDirectoryPath);
         } else {
           prevFile();
         }
-
         break;
       case "ArrowRight":
         if (fileNo === files.length - 1) {
+          setFirstOrlastPage("first");
           navigate(nextDirectoryPath);
         } else {
           nextFile();
         }
         break;
       case "ArrowUp":
+        setFirstOrlastPage("last");
         navigate(prevDirectoryPath);
         break;
       case "ArrowDown":
+        setFirstOrlastPage("first");
         navigate(nextDirectoryPath);
         break;
       case "a":
@@ -104,7 +112,8 @@ export const Picture = ({
         break;
       case "Delete":
         // TODO: 削除時に次のディレクトリに移動させることに失敗している
-        // nextDirectory(directory, e);
+        setFirstOrlastPage("first");
+        navigate(nextDirectoryPath);
         deleteDirectory(directoryPath);
         break;
     }
@@ -122,7 +131,7 @@ export const Picture = ({
           <Link
             className="prevArea"
             to={prevDirectoryPath}
-            onClick={() => (firstOrlastPage = "last")}
+            onClick={() => setFirstOrlastPage("last")}
           ></Link>
         ) : (
           <div className="prevArea" onClick={() => prevFile()}></div>
@@ -132,7 +141,7 @@ export const Picture = ({
             className="prevDirectoryArea"
             to={prevDirectoryPath}
             onClick={() => {
-              firstOrlastPage = "last";
+              setFirstOrlastPage("last");
             }}
           ></Link>
           <div className="middleArea" onClick={onOffSlideShow}></div>
@@ -140,7 +149,7 @@ export const Picture = ({
             className="nextDirectoryArea"
             to={nextDirectoryPath}
             onClick={() => {
-              firstOrlastPage = "first";
+              setFirstOrlastPage("first");
             }}
           ></Link>
         </div>
@@ -149,7 +158,7 @@ export const Picture = ({
             className="nextArea"
             to={nextDirectoryPath}
             onClick={() => {
-              firstOrlastPage = "first";
+              setFirstOrlastPage("first");
             }}
           ></Link>
         ) : (
