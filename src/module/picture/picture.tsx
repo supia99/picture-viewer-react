@@ -21,6 +21,7 @@ export const Picture = ({
   const [fileNo, set] = useState(0);
   const [isSlideShow, setIsSlideShow] = useState(false);
   const [imageStyle, setImageStyle] = useState({ background: "" });
+  const [slideShowCount, setSlideShowCount] = useState(0);
   const [firstOrlastPage, setFirstOrlastPage] = useState(
     "first" as "first" | "last"
   );
@@ -37,14 +38,6 @@ export const Picture = ({
   const pictureModuleRef = useRef(null);
 
   useEffect(() => {
-    if (isSlideShow) {
-      const waitTime = slideShowWaitTime * 1000;
-      const tmpFileNo = fileNo;
-      window.setTimeout(() => {
-        console.log(`slideShow tmpFileNo: ${tmpFileNo} fileNo: ${fileNo}`);
-        tmpFileNo === fileNo && nextFile();
-      }, waitTime);
-    }
     // TODO: anyを解決する
     (pictureModuleRef.current! as any).focus();
     setImageStyle({
@@ -53,6 +46,19 @@ export const Picture = ({
       }/sdb${directoryPath}/${files[fileNo].name}")`,
     });
   }, [fileNo]);
+
+  useEffect(() => {
+    slideShow();
+  }, [slideShowCount]);
+  const slideShow = () => {
+    if (isSlideShow) {
+      const waitTime = slideShowWaitTime * 1000;
+      nextFile();
+      window.setTimeout(() => {
+        setSlideShowCount(slideShowCount + 1);
+      }, waitTime);
+    }
+  };
 
   useEffect(() => {
     console.log(`firstOrlastPage ${firstOrlastPage}`);
@@ -93,6 +99,10 @@ export const Picture = ({
     console.log("slideShow on");
     setIsSlideShow(true);
     nextFile();
+    const waitTime = slideShowWaitTime * 1000;
+    window.setTimeout(() => {
+      setSlideShowCount(slideShowCount + 1);
+    }, waitTime);
   };
 
   // TODO: anyを解決する
