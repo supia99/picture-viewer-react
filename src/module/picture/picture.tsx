@@ -60,10 +60,26 @@ export const Picture = ({
   }, [directoryPath]);
 
   const nextFile = () => {
-    setFileNo(fileNo + 1);
+    if (fileNo === files.length - 1) {
+      nextDirectory();
+    } else {
+      setFileNo(fileNo + 1);
+    }
   };
   const prevFile = () => {
-    setFileNo(fileNo - 1);
+    if (fileNo === 0) {
+      prevDirectory();
+    } else {
+      setFileNo(fileNo - 1);
+    }
+  };
+  const nextDirectory = () => {
+    setFirstOrlastPage("first");
+    navigate(nextDirectoryPath);
+  };
+  const prevDirectory = () => {
+    setFirstOrlastPage("last");
+    navigate(prevDirectoryPath);
   };
 
   //TODO: slideShowモードで起動時にnextFile(), prevFile()を実行するとバグるのを解決する
@@ -84,28 +100,16 @@ export const Picture = ({
     console.log(`e.key: ${e.key}`);
     switch (e.key) {
       case "ArrowLeft":
-        if (fileNo === 0) {
-          setFirstOrlastPage("last");
-          navigate(prevDirectoryPath);
-        } else {
-          prevFile();
-        }
+        prevFile();
         break;
       case "ArrowRight":
-        if (fileNo === files.length - 1) {
-          setFirstOrlastPage("first");
-          navigate(nextDirectoryPath);
-        } else {
-          nextFile();
-        }
+        nextFile();
         break;
       case "ArrowUp":
-        setFirstOrlastPage("last");
-        navigate(prevDirectoryPath);
+        prevDirectory();
         break;
       case "ArrowDown":
-        setFirstOrlastPage("first");
-        navigate(nextDirectoryPath);
+        nextDirectory();
         break;
       case "a":
         onOffSlideShow();
@@ -127,6 +131,7 @@ export const Picture = ({
       ref={pictureModuleRef}
     >
       <div className="navigateArea" style={imageStyle}>
+        {/* TODO: Linkは不要 */}
         {fileNo === 0 ? (
           <Link
             className="prevArea"
