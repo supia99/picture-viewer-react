@@ -32,7 +32,7 @@ export const Picture = ({
     setImageStyle({
       background: `center / contain no-repeat url("${
         import.meta.env.VITE_FILE_BASE_URL
-      }/sdb${directoryPath}/${files[fileNo].name}")`,
+      }${directoryPath}/${files[fileNo].name}")`,
     });
   };
   const pictureModuleRef = useRef(null);
@@ -43,7 +43,7 @@ export const Picture = ({
     setImageStyle({
       background: `center / contain no-repeat url("${
         import.meta.env.VITE_FILE_BASE_URL
-      }/sdb${directoryPath}/${files[fileNo].name}")`,
+      }${directoryPath}/${files[fileNo].name}")`,
     });
   }, [fileNo]);
 
