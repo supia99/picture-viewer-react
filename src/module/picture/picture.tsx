@@ -10,6 +10,7 @@ type props = {
   files: File[];
   nextDirectoryPath: string;
   prevDirectoryPath: string;
+  fileDomain: string;
 };
 
 export const Picture = ({
@@ -17,6 +18,7 @@ export const Picture = ({
   files,
   nextDirectoryPath,
   prevDirectoryPath,
+  fileDomain,
 }: props) => {
   const [fileNo, set] = useState(0);
   const [isSlideShow, setIsSlideShow] = useState(false);
@@ -30,9 +32,7 @@ export const Picture = ({
   const setFileNo = (no: number) => {
     set(no);
     setImageStyle({
-      background: `center / contain no-repeat url("${
-        import.meta.env.VITE_FILE_BASE_URL
-      }${directoryPath}/${files[fileNo].name}")`,
+      background: `center / contain no-repeat url("http://${fileDomain}${directoryPath}/${files[fileNo].name}")`,
     });
   };
   const pictureModuleRef = useRef(null);
@@ -41,9 +41,7 @@ export const Picture = ({
     // TODO: anyを解決する
     (pictureModuleRef.current! as any).focus();
     setImageStyle({
-      background: `center / contain no-repeat url("${
-        import.meta.env.VITE_FILE_BASE_URL
-      }${directoryPath}/${files[fileNo].name}")`,
+      background: `center / contain no-repeat url("http://${fileDomain}${directoryPath}/${files[fileNo].name}")`,
     });
   }, [fileNo]);
 

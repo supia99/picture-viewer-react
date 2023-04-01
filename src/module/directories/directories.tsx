@@ -15,10 +15,12 @@ export const Directories = ({ path }: props) => {
   );
   const [nextDirectoryPath, setNextDirectoryPath] = useState("/");
   const [prevDirectoryPath, setPrevDirectoryPath] = useState("/");
+  const [fileDomain, setFileDomain] = useState("");
 
   useEffect(() => {
     getFiles(path || "/", "-time").then((response) => {
-      setFiles(response);
+      setFiles(response.children);
+      setFileDomain(response.fileDomain);
     });
 
     if (path !== "/") {
@@ -26,23 +28,21 @@ export const Directories = ({ path }: props) => {
       const lastDirectoryName = decodeURI(
         path.replace(oneHigherDirectoryPath, "").replace("/", "")
       );
-      getFiles(oneHigherDirectoryPath, "-time").then(
-        (responseDirectoryNames) => {
-          const fileNo = responseDirectoryNames.findIndex((directory) => {
-            return directory.name === lastDirectoryName;
-          });
-          setNextDirectoryPath(
-            `${oneHigherDirectoryPath}/${
-              responseDirectoryNames[fileNo + 1].name
-            }`
-          );
-          setPrevDirectoryPath(
-            `${oneHigherDirectoryPath}/${
-              responseDirectoryNames[fileNo - 1].name
-            }`
-          );
-        }
-      );
+      getFiles(oneHigherDirectoryPath, "-time").then((responseDirectory) => {
+        const fileNo = responseDirectory.children.findIndex((directory) => {
+          return directory.name === lastDirectoryName;
+        });
+        setNextDirectoryPath(
+          `${oneHigherDirectoryPath}/${
+            responseDirectory.children[fileNo + 1].name
+          }`
+        );
+        setPrevDirectoryPath(
+          `${oneHigherDirectoryPath}/${
+            responseDirectory.children[fileNo - 1].name
+          }`
+        );
+      });
     }
 
     console.log("end useEffect");
@@ -55,6 +55,7 @@ export const Directories = ({ path }: props) => {
       files={files}
       nextDirectoryPath={nextDirectoryPath}
       prevDirectoryPath={prevDirectoryPath}
+      fileDomain={fileDomain}
     />
   ) : (
     <>
