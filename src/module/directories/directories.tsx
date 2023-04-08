@@ -65,7 +65,7 @@ export const Directories = ({ path }: props) => {
           return (
             <li key={file.name}>
               <Link
-                to={path === "/" ? `/${file.name}` : `${path}/${file.name}`}
+                to={path === "/" ? `${file.name}` : `${path}/${file.name}`}
               >
                 {file.name}
               </Link>
