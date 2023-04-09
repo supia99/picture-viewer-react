@@ -12,14 +12,19 @@
 .comic-card {
   /* display: flexbox; */
   margin: 4px;
-  height: 320px;
+  height: 280px;
   width: 160px;
   list-style: none;
-  border: solid red
+  border: solid red;
 }
 
 .comic-createdAt {
-  height: 16px;
+  font-size: 0.5rem;
+}
+
+.comic-createdAt-old {
+  font-size: 0.5rem;
+  color: blue;
 }
 
 .comic-thumbnail {
@@ -28,8 +33,17 @@
   object-fit: contain;
 }
 
+.comic-thumbnail:hover {
+  cursor: pointer;
+  opacity: 0.6;
+}
+
 .comic-name {
-  height: 16px
+  height: 16px;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 0.5rem;
 }
 
 .prev {

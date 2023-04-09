@@ -3,6 +3,8 @@ import { DoujinnmoriObject } from "../../model/DoujinnomoriObject";
 import { getDoujinnomori } from "../../api/getDoujinnomori";
 import "./doujinnomori.css";
 import { DmLink } from "../doujinnomoriComponent/link";
+import { saveDoujinnomori } from "../../api/saveDoujinnomori";
+import { escapeURI } from "../../util/escapeURI";
 // import { Link } from "react-router-dom";
 
 export const Doujinnomori = ({ path }: { path: string }) => {
@@ -19,7 +21,7 @@ export const Doujinnomori = ({ path }: { path: string }) => {
       // setDmInfos(await mutiTimeGetRequest({from: relayGetCount, to: toRelayGetCount}))
       // setRelayGetCount(toRelayGetCount)
     })();
-  });
+  }, [path]);
 
   dmInfos.length && console.log(`lenght: ${dmInfos.length}`);
   return (
@@ -32,12 +34,13 @@ export const Doujinnomori = ({ path }: { path: string }) => {
         {dmInfos.map((dmInfo) => (
           <li className="comic-card" key={dmInfo.id}>
             <p className="comic-createdAt">
-              {new Date(dmInfo.created).toLocaleDateString()}
+              createdAt: {new Date(dmInfo.created).toLocaleDateString()}
             </p>
-            <p className="comic-createdAt">
+            {/* <p className="comic-createdAt">
               {new Date(dmInfo.modified).toLocaleDateString()}
-            </p>
-            <img src={dmInfo.thumbnailUrl} className="comic-thumbnail" />
+            </p> */}
+            <img src={dmInfo.thumbnailUrl} className="comic-thumbnail" onClick={() => {saveDoujinnomori({uuid: escapeURI(dmInfo.uuid), title: escapeURI(dmInfo.name)})}}/>
+            {/* TODO: タイトルを押したときにタブが開き、検索がされる */}
             <p className="comic-name">{dmInfo.name}</p>
           </li>
         ))}
