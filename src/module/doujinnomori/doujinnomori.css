@@ -1,3 +1,7 @@
+.picture-container {
+  display: flex;
+}
+
 .comic-card-list {
   display: flex;
   flex-wrap: wrap;
@@ -26,4 +30,26 @@
 
 .comic-name {
   height: 16px
+}
+
+.prev {
+  width: 80px;
+  flex-shrink: 0;
+  padding-top: 400px;
+  font-size: 60px;
+  text-decoration: unset;
+  color: gainsboro;
+  font-weight: bold;
+  background-color: darkgray;
+}
+
+.next {
+  width: 80px;
+  flex-shrink: 0;
+  padding-top: 400px;
+  font-size: 60px;
+  text-decoration: unset;
+  color: gainsboro;
+  font-weight: bold;
+  background-color: darkgray;
 }
