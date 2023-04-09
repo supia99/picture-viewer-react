@@ -1,5 +1,5 @@
 import { Dispatch, useContext, useState } from "react";
-import { SlideWaitTimeContext } from "../../App";
+import { SlideWaitTimeContext } from "../../PictureApp";
 import { Link } from "react-router-dom";
 import "./menu.css";
 

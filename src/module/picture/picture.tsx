@@ -1,9 +1,11 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { deleteDirectory } from "../../api/deleteDirectory";
-import { SlideWaitTimeContext } from "../../App";
+import { SlideWaitTimeContext } from "../../PictureApp";
 import { File } from "../../model/File";
 import "./picture.css";
+import { PictureLink } from "../pictureComponent/link";
+import { pictureNavigate } from "../pictureComponent/navigate";
 
 type props = {
   directoryPath: string;
@@ -83,11 +85,11 @@ export const Picture = ({
   };
   const nextDirectory = () => {
     setFirstOrlastPage("first");
-    navigate(nextDirectoryPath);
+    pictureNavigate(navigate, nextDirectoryPath);
   };
   const prevDirectory = () => {
     setFirstOrlastPage("last");
-    navigate(prevDirectoryPath);
+    pictureNavigate(navigate, prevDirectoryPath);
   };
 
   //TODO: slideShowモードで起動時にnextFile(), prevFile()を実行するとバグるのを解決する
@@ -129,7 +131,7 @@ export const Picture = ({
       case "Delete":
         // TODO: 削除時に次のディレクトリに移動させることに失敗している
         setFirstOrlastPage("first");
-        navigate(nextDirectoryPath);
+        pictureNavigate(navigate, nextDirectoryPath);
         deleteDirectory(directoryPath);
         break;
     }
@@ -143,41 +145,40 @@ export const Picture = ({
       ref={pictureModuleRef}
     >
       <div className="navigateArea" style={imageStyle}>
-        {/* TODO: Linkは不要 */}
         {fileNo === 0 ? (
-          <Link
+          <PictureLink
             className="prevArea"
             to={prevDirectoryPath}
             onClick={() => setFirstOrlastPage("last")}
-          ></Link>
+          ></PictureLink>
         ) : (
           <div className="prevArea" onClick={() => prevFile()}></div>
         )}
         <div className="directoryArea">
-          <Link
+          <PictureLink
             className="prevDirectoryArea"
             to={prevDirectoryPath}
             onClick={() => {
               setFirstOrlastPage("last");
             }}
-          ></Link>
+          ></PictureLink>
           <div className="middleArea" onClick={onOffSlideShow}></div>
-          <Link
+          <PictureLink
             className="nextDirectoryArea"
             to={nextDirectoryPath}
             onClick={() => {
               setFirstOrlastPage("first");
             }}
-          ></Link>
+          ></PictureLink>
         </div>
         {fileNo === files.length - 1 ? (
-          <Link
+          <PictureLink
             className="nextArea"
             to={nextDirectoryPath}
             onClick={() => {
               setFirstOrlastPage("first");
             }}
-          ></Link>
+          ></PictureLink>
         ) : (
           <div className="nextArea" onClick={() => nextFile()}></div>
         )}

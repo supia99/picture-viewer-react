@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { getFiles } from "../../api/getFiles";
 import { File } from "../../model/File";
 import { Picture } from "../picture/picture";
+import { PictureLink } from "../pictureComponent/link";
 
 type props = {
   path: string;
@@ -61,11 +61,11 @@ export const Directories = ({ path }: props) => {
         {files.map((file) => {
           return (
             <li key={file.name}>
-              <Link
+              <PictureLink
                 to={path === "/" ? `${file.name}` : `${path}/${file.name}`}
               >
                 {file.name}
-              </Link>
+              </PictureLink>
             </li>
           );
         })}
@@ -107,9 +107,9 @@ const LiLinkReturn = ({ path }: { path: string }) => {
   return (
     <li>
       {path.includes("/") ? (
-        <Link to={path.substring(0, path.lastIndexOf("/"))}>..</Link>
+        <PictureLink to={path.substring(0, path.lastIndexOf("/"))}>..</PictureLink>
       ) : (
-        <Link to="/">..</Link>
+        <PictureLink to="/">..</PictureLink>
       )}
     </li>
   );
