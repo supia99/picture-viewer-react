@@ -33,7 +33,7 @@ export const Doujinnomori = ({ path }: { path: string }) => {
       <ul className="comic-card-list">
         {dmInfos.map((dmInfo) => (
           <li className="comic-card" key={dmInfo.id}>
-            <p className="comic-createdAt">
+          <p className={new Date(dmInfo.modified).getFullYear() - new Date(dmInfo.created).getFullYear() > 0? "comic-createdAt-old": "comic-createdAt"}>
               createdAt: {new Date(dmInfo.created).toLocaleDateString()}
             </p>
             {/* <p className="comic-createdAt">
