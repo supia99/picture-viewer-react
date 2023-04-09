@@ -50,6 +50,7 @@ export const Picture = ({
   useEffect(() => {
     slideShow();
   }, [slideShowCount]);
+  
   const slideShow = () => {
     if (isSlideShow) {
       const waitTime = slideShowWaitTime * 1000;
@@ -60,10 +61,11 @@ export const Picture = ({
     }
   };
 
+  // ディレクトリ移動をしたときに移動した後のページ数を使用する
   useEffect(() => {
-    console.log(`firstOrlastPage ${firstOrlastPage}`);
+    console.log(`firstOrlastPage ${firstOrlastPage} files.length: ${files.length} path: ${decodeURI(directoryPath)} path: ${decodeURI(prevDirectoryPath)}`);
     setFileNo(firstOrlastPage === "first" ? 0 : files.length - 1);
-  }, [directoryPath]);
+  }, [prevDirectoryPath]);
 
   const nextFile = () => {
     if (fileNo === files.length - 1) {

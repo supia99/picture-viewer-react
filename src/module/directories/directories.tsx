@@ -10,9 +10,6 @@ type props = {
 
 export const Directories = ({ path }: props) => {
   const [files, setFiles] = useState([] as File[]);
-  const [firstOrLastPage, setFirstOrLastPage] = useState(
-    "first" as "first" | "last"
-  );
   const [nextDirectoryPath, setNextDirectoryPath] = useState("/");
   const [prevDirectoryPath, setPrevDirectoryPath] = useState("/");
   const [fileDomain, setFileDomain] = useState("");
