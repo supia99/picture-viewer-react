@@ -3,6 +3,7 @@ import { Directories } from "./module/directories/directories";
 import { Menu } from "./module/menu/menu";
 import "./App.css";
 import { useLocation } from "react-router-dom";
+import { Doujinnomori } from "./module/doujinnomori/doujinnomori";
 
 export const SlideWaitTimeContext = createContext(3);
 function App() {
@@ -13,7 +14,8 @@ function App() {
     <SlideWaitTimeContext.Provider value={slideWaitTime}>
       <div className="app">
         <Menu setSlideWaitTime={setSlideWaitTime} />
-        <Directories path={path} />
+        {/* <Directories path={path} /> */}
+        <Doujinnomori/>
       </div>
     </SlideWaitTimeContext.Provider>
   );

@@ -29,6 +29,7 @@ export const Menu = ({ setSlideWaitTime }: props) => {
           </div>
         </div>
       )}
+      {/* TODO: 上のディレクトリに移動できる */}
       <div className="tab" onClick={() => setIsShowMenu(!isShowMenu)}></div>
     </div>
   );

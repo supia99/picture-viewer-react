@@ -1,0 +1,29 @@
+.comic-card-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 16px;
+  border: solid;
+}
+
+.comic-card {
+  /* display: flexbox; */
+  margin: 4px;
+  height: 320px;
+  width: 160px;
+  list-style: none;
+  border: solid red
+}
+
+.comic-createdAt {
+  height: 16px;
+}
+
+.comic-thumbnail {
+  width: 100%;
+  margin: 4px 0;
+  object-fit: contain;
+}
+
+.comic-name {
+  height: 16px
+}
