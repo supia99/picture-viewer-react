@@ -5,6 +5,8 @@ import PictureApp from "./PictureApp";
 import ErrorPage from "./error-page";
 import { Home } from "./module/home/home";
 import DoujinnomoriApp from "./DoujinnomoriApp";
+import { Wnacg } from "./module/wnacg/wnacg";
+import WnacgApp from "./module/wnacg/WnacgApp";
 
 // react-router-dom https://reactrouter.com/en/main/start/tutorial
 const router = createBrowserRouter([
@@ -22,7 +24,10 @@ const router = createBrowserRouter([
     path: "/doujinnomori/*",
     element: <DoujinnomoriApp />,
     errorElement: <ErrorPage />,
-  },
+  },{
+    path: "/wnacg/*",
+    element: <WnacgApp />
+  }
 
 ]);
 
