@@ -1,8 +1,12 @@
+import { useEffect } from "react";
 import { useRouteError } from "react-router-dom";
 
 export default function ErrorPage() {
   const error = useRouteError() as {statusText: string, message: string};
   console.error(error);
+  useEffect(() => {
+    location.reload();
+  })
 
   return (
     <div id="error-page">
