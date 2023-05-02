@@ -65,9 +65,9 @@ export const Picture = ({
 
   // ディレクトリ移動をしたときに移動した後のページ数を使用する
   useEffect(() => {
-    console.log(`firstOrlastPage ${firstOrlastPage} files.length: ${files.length} path: ${decodeURI(directoryPath)} prevPath: ${decodeURI(prevDirectoryPath)} nextPath: ${decodeURI(nextDirectoryPath)}`);
+    console.log(`useEffect(,[directoryPath]) firstOrlastPage ${firstOrlastPage} files.length: ${files.length} path: ${decodeURI(directoryPath)} prevPath: ${decodeURI(prevDirectoryPath)} nextPath: ${decodeURI(nextDirectoryPath)}, page:${firstOrlastPage === "first" ? 0 : files.length - 1}`);
     setFileNo(firstOrlastPage === "first" ? 0 : files.length - 1);
-  }, [prevDirectoryPath, nextDirectoryPath]);
+  }, [files])
 
   const nextFile = () => {
     if (fileNo === files.length - 1) {
@@ -85,6 +85,8 @@ export const Picture = ({
   };
   const nextDirectory = () => {
     setFirstOrlastPage("first");
+    // 次ディレクトリ初回表示時に最大ページ数より大きいとエラーになるため0にする
+    setFileNo(0)
     pictureNavigate(navigate, nextDirectoryPath);
   };
   const prevDirectory = () => {
