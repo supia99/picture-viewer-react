@@ -65,9 +65,9 @@ export const Picture = ({
 
   // ディレクトリ移動をしたときに移動した後のページ数を使用する
   useEffect(() => {
-    console.log(`firstOrlastPage ${firstOrlastPage} files.length: ${files.length} path: ${decodeURI(directoryPath)} path: ${decodeURI(prevDirectoryPath)}`);
+    console.log(`firstOrlastPage ${firstOrlastPage} files.length: ${files.length} path: ${decodeURI(directoryPath)} prevPath: ${decodeURI(prevDirectoryPath)} nextPath: ${decodeURI(nextDirectoryPath)}`);
     setFileNo(firstOrlastPage === "first" ? 0 : files.length - 1);
-  }, [prevDirectoryPath]);
+  }, [prevDirectoryPath, nextDirectoryPath]);
 
   const nextFile = () => {
     if (fileNo === files.length - 1) {
