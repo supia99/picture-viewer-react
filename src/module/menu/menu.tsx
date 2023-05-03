@@ -16,6 +16,14 @@ export const Menu = ({ setSlideWaitTime }: props) => {
       {isShowMenu && (
         <div className="content">
           <Link to="/">home</Link>
+          <a
+            href=""
+            onClick={() => {
+              location.href = returnOneHigherPage(location.href);
+            }}
+          >
+            戻る
+          </a>
           <div className="slideShowTimeArea">
             <p>slide show time(s):</p>
             <input
@@ -33,4 +41,8 @@ export const Menu = ({ setSlideWaitTime }: props) => {
       <div className="tab" onClick={() => setIsShowMenu(!isShowMenu)}></div>
     </div>
   );
+};
+
+const returnOneHigherPage = (path: string) => {
+  return path.substring(0, path.lastIndexOf("/"));
 };
