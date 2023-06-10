@@ -17,7 +17,6 @@ export const Menu = ({ setSlideWaitTime }: props) => {
         <div className="content">
           <Link to="/">home</Link>
           <a
-            href=""
             onClick={() => {
               location.href = returnOneHigherPage(location.href);
             }}
