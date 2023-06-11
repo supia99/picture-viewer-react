@@ -24,39 +24,23 @@ export const Picture = ({
   prevDirectoryPath,
   fileDomain,
 }: props) => {
-  const [fileNo, set] = useState(0);
+  // const [fileNo, setFileNo] = useState(0);
   const [isSlideShow, setIsSlideShow] = useState(false);
-  const [imageStyle, setImageStyle] = useState({ background: "" });
+  // const [imageStyle, setImageStyle] = useState({ background: "" });
   const [slideShowCount, setSlideShowCount] = useState(0);
   const [firstOrlastPage, setFirstOrlastPage] = useState(
     "first" as "first" | "last"
   );
   const slideShowWaitTime = useContext(SlideWaitTimeContext);
   const navigate = useNavigate();
-  const setFileNo = (no: number) => {
-    set(no);
-    setImageStyle({
-      background: `center / contain no-repeat url("http://${fileDomain}${directoryPath}/${files[fileNo].name}")`,
-    });
-  };
-  const pictureModuleRef = useRef(null);
-
-  useEffect(() => {
-    // TODO: anyを解決する
-    (pictureModuleRef.current! as any).focus();
-    setImageStyle({
-      background: `center / contain no-repeat url("http://${fileDomain}${directoryPath}/${files[fileNo].name}")`,
-    });
-  }, [fileNo]);
-
   useEffect(() => {
     slideShow();
   }, [slideShowCount]);
-  
+
   const slideShow = () => {
     if (isSlideShow) {
       const waitTime = slideShowWaitTime * 1000;
-      nextFile();
+      // TODO: 次のanchorに移動する
       window.setTimeout(() => {
         setSlideShowCount(slideShowCount + 1);
       }, waitTime);
@@ -65,28 +49,20 @@ export const Picture = ({
 
   // ディレクトリ移動をしたときに移動した後のページ数を使用する
   useEffect(() => {
-    console.log(`useEffect(,[directoryPath]) firstOrlastPage ${firstOrlastPage} files.length: ${files.length} path: ${decodeURI(directoryPath)} prevPath: ${decodeURI(prevDirectoryPath)} nextPath: ${decodeURI(nextDirectoryPath)}, page:${firstOrlastPage === "first" ? 0 : files.length - 1}`);
-    setFileNo(firstOrlastPage === "first" ? 0 : files.length - 1);
-  }, [files])
+    console.log(
+      `useEffect(,[directoryPath]) firstOrlastPage ${firstOrlastPage} files.length: ${
+        files.length
+      } path: ${decodeURI(directoryPath)} prevPath: ${decodeURI(
+        prevDirectoryPath
+      )} nextPath: ${decodeURI(nextDirectoryPath)}, page:${
+        firstOrlastPage === "first" ? 0 : files.length - 1
+      }`
+    );
+    // setFileNo(firstOrlastPage === "first" ? 0 : files.length - 1);
+  }, [files]);
 
-  const nextFile = () => {
-    if (fileNo === files.length - 1) {
-      nextDirectory();
-    } else {
-      setFileNo(fileNo + 1);
-    }
-  };
-  const prevFile = () => {
-    if (fileNo === 0) {
-      prevDirectory();
-    } else {
-      setFileNo(fileNo - 1);
-    }
-  };
   const nextDirectory = () => {
     setFirstOrlastPage("first");
-    // 次ディレクトリ初回表示時に最大ページ数より大きいとエラーになるため0にする
-    setFileNo(0)
     pictureNavigate(navigate, nextDirectoryPath);
   };
   const prevDirectory = () => {
@@ -94,7 +70,6 @@ export const Picture = ({
     pictureNavigate(navigate, prevDirectoryPath);
   };
 
-  //TODO: slideShowモードで起動時にnextFile(), prevFile()を実行するとバグるのを解決する
   const onOffSlideShow = () => {
     console.log("run slideShow");
     if (isSlideShow) {
@@ -104,7 +79,7 @@ export const Picture = ({
     }
     console.log("slideShow on");
     setIsSlideShow(true);
-    nextFile();
+    // TODO: 次のアンカーに移動する
     const waitTime = slideShowWaitTime * 1000;
     window.setTimeout(() => {
       setSlideShowCount(slideShowCount + 1);
@@ -116,10 +91,10 @@ export const Picture = ({
     console.log(`e.key: ${e.key}`);
     switch (e.key) {
       case "ArrowLeft":
-        prevFile();
+        // TODO: prevFile();
         break;
       case "ArrowRight":
-        nextFile();
+        // TODO: nextFile();
         break;
       case "ArrowUp":
         prevDirectory();
@@ -139,52 +114,72 @@ export const Picture = ({
     }
   };
 
+  console.log()
   return (
     <div
       className="pictureModule"
       onKeyDown={(e) => keyOperation(e)}
-      tabIndex={0}
-      ref={pictureModuleRef}
     >
-      <div className="navigateArea" style={imageStyle}>
-        {fileNo === 0 ? (
-          <PictureLink
-            className="prevArea"
-            to={prevDirectoryPath}
-            onClick={() => setFirstOrlastPage("last")}
-          ></PictureLink>
-        ) : (
-          <div className="prevArea" onClick={() => prevFile()}></div>
-        )}
-        <div className="directoryArea">
-          <PictureLink
-            className="prevDirectoryArea"
-            to={prevDirectoryPath}
-            onClick={() => {
-              setFirstOrlastPage("last");
-            }}
-          ></PictureLink>
-          <div className="middleArea" onClick={onOffSlideShow}></div>
-          <PictureLink
-            className="nextDirectoryArea"
-            to={nextDirectoryPath}
-            onClick={() => {
-              setFirstOrlastPage("first");
-            }}
-          ></PictureLink>
-        </div>
-        {fileNo === files.length - 1 ? (
-          <PictureLink
-            className="nextArea"
-            to={nextDirectoryPath}
-            onClick={() => {
-              setFirstOrlastPage("first");
-            }}
-          ></PictureLink>
-        ) : (
-          <div className="nextArea" onClick={() => nextFile()}></div>
-        )}
-      </div>
+      {files.map((file, i) => {
+        return (
+          <div
+            className="navigateArea"
+            style={createImageStyle(
+              `http://${fileDomain}${directoryPath}/${file.name}`
+            )}
+            tabIndex={i}
+            id={`${file.name}`}
+            key={`${file.name}`}
+          >
+            {i === 0 ? (
+              <PictureLink
+                className="prevArea"
+                to={prevDirectoryPath}
+                onClick={() => setFirstOrlastPage("last")}
+              ></PictureLink>
+            ) : (
+              <a className="prevArea" href={changeHrefAnchor(`${files[i-1].name}`)} ></a>
+            )}
+            <div className="directoryArea">
+              <PictureLink
+                className="prevDirectoryArea"
+                to={prevDirectoryPath}
+                onClick={() => {
+                  setFirstOrlastPage("last");
+                }}
+              ></PictureLink>
+              <div className="middleArea" onClick={onOffSlideShow}></div>
+              <PictureLink
+                className="nextDirectoryArea"
+                to={nextDirectoryPath}
+                onClick={() => {
+                  setFirstOrlastPage("first");
+                }}
+              ></PictureLink>
+            </div>
+            {i === files.length - 1 ? (
+              <PictureLink
+                className="nextArea"
+                to={nextDirectoryPath}
+                onClick={() => {
+                  setFirstOrlastPage("first");
+                }}
+              ></PictureLink>
+            ) : (
+              <a className="nextArea" href={changeHrefAnchor(`${files[i+1].name}`)}></a>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };
+
+const createImageStyle = (fileUrl: string) => {
+  return { background: `center / contain no-repeat url(${fileUrl})` };
+};
+
+const changeHrefAnchor =(anchorName: string) => {
+  const nowUrl = location.href.replace(/#.+/, "")
+  return `${nowUrl}#${anchorName}`
+}
