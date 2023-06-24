@@ -114,19 +114,18 @@ export const Picture = ({
     }
   };
 
-  console.log()
   return (
-    <div
-      className="pictureModule"
-      onKeyDown={(e) => keyOperation(e)}
-    >
+    <div className="pictureModule" onKeyDown={(e) => keyOperation(e)}>
       {files.map((file, i) => {
         return (
           <div
             className="navigateArea"
-            style={createImageStyle(
-              `http://${fileDomain}${directoryPath}/${file.name}`
-            )}
+            style={
+            //   {
+            //   background: "url(\"http://192.168.50.226:18081/wnacg/%E3%82%B7%E3%83%B3%E3%82%BB%E3%82%AB%E3%82%A4%E3%82%BB%E3%83%83%E3%83%88(%E3%81%B8%E3%81%9F%E3%82%8C%E3%82%93)_%E7%A7%81%E3%81%8C%E5%85%88%E7%94%9F%E3%81%AE%E7%84%A1%E7%AF%80%E6%93%8D%E3%82%92%E7%9F%AF%E6%AD%A3%E3%81%97%E3%81%BE%E3%81%99%E3%81%A3%EF%BC%81(%E3%83%96%E3%83%AB%E3%83%BC%E3%82%A2%E3%83%BC%E3%82%AB%E3%82%A4%E3%83%96)/_001.jpg\") center center / contain no-repeat",
+            // }
+            createImageStyle(`http://${fileDomain}${directoryPath}/${file.name}`)
+          }
             tabIndex={i}
             id={`${file.name}`}
             key={`${file.name}`}
@@ -138,7 +137,10 @@ export const Picture = ({
                 onClick={() => setFirstOrlastPage("last")}
               ></PictureLink>
             ) : (
-              <a className="prevArea" href={changeHrefAnchor(`${files[i-1].name}`)} ></a>
+              <a
+                className="prevArea"
+                href={changeHrefAnchor(`${files[i - 1].name}`)}
+              ></a>
             )}
             <div className="directoryArea">
               <PictureLink
@@ -166,7 +168,10 @@ export const Picture = ({
                 }}
               ></PictureLink>
             ) : (
-              <a className="nextArea" href={changeHrefAnchor(`${files[i+1].name}`)}></a>
+              <a
+                className="nextArea"
+                href={changeHrefAnchor(`${files[i + 1].name}`)}
+              ></a>
             )}
           </div>
         );
@@ -176,10 +181,14 @@ export const Picture = ({
 };
 
 const createImageStyle = (fileUrl: string) => {
-  return { background: `center / contain no-repeat url(${fileUrl})` };
+  const css = {
+    background: `url(\"${fileUrl}\") center center / contain no-repeat`,
+  };
+  console.log(`createImageStyle:${JSON.stringify(css)}`);
+  return css;
 };
 
-const changeHrefAnchor =(anchorName: string) => {
-  const nowUrl = location.href.replace(/#.+/, "")
-  return `${nowUrl}#${anchorName}`
-}
+const changeHrefAnchor = (anchorName: string) => {
+  const nowUrl = location.href.replace(/#.+/, "");
+  return `${nowUrl}#${anchorName}`;
+};
