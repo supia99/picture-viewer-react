@@ -71,3 +71,8 @@
   flex-shrink: 0;
   /* background-color: rgba(0, 255, 0, 0.3); */
 }
+
+.only-reading {
+  position: absolute;
+  top:-10000px
+}

@@ -139,7 +139,7 @@ export const Picture = ({
     }
   };
 
-  return (
+  return (    
     <div
       className="pictureModule"
       onKeyDown={(e) => keyOperation(e)}
@@ -185,6 +185,11 @@ export const Picture = ({
           <div className="nextArea" onClick={() => nextFile()}></div>
         )}
       </div>
+      {
+        files.map((file) => 
+          <img className="only-reading" src={`http://${fileDomain}${directoryPath}/${file.name}`} />
+        )
+      }
     </div>
   );
 };
