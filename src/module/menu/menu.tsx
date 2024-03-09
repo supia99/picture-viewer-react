@@ -78,6 +78,6 @@ const returnOneHigherPage = (path: string) => {
 const setSortBy = (value: string) => {
   localStorage.setItem(SORT_BY_KEY_NAME, value);
 };
-const getSortBy = () => {
+export const getSortBy = () => {
   return localStorage.getItem(SORT_BY_KEY_NAME);
 };

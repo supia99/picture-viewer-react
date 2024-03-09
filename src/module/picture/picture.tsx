@@ -92,7 +92,6 @@ export const Picture = ({
     pictureNavigate(navigate, prevDirectoryPath);
   };
 
-  //TODO: slideShowモードで起動時にnextFile(), prevFile()を実行するとバグるのを解決する
   const onOffSlideShow = () => {
     console.log("run slideShow");
     if (isSlideShow) {

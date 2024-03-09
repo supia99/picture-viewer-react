@@ -3,6 +3,7 @@ import { getFiles } from "../../api/getFiles";
 import { File } from "../../model/File";
 import { Picture } from "../picture/picture";
 import { PictureLink } from "../pictureComponent/link";
+import { getSortBy } from "../menu/menu";
 
 type props = {
   path: string;
@@ -15,7 +16,8 @@ export const Directories = ({ path }: props) => {
   const [fileDomain, setFileDomain] = useState("");
 
   useEffect(() => {
-    getFiles(path || "/", "-time").then((response) => {
+    const sortBy = getSortBy() || "-time"
+    getFiles(path || "/", sortBy).then((response) => {
       setFiles(response.children);
       setFileDomain(response.fileDomain);
     });
@@ -25,7 +27,7 @@ export const Directories = ({ path }: props) => {
       const lastDirectoryName = decodeURI(
         path.replace(oneHigherDirectoryPath, "").replace("/", "")
       );
-      getFiles(oneHigherDirectoryPath, "-time").then((responseDirectory) => {
+      getFiles(oneHigherDirectoryPath, sortBy).then((responseDirectory) => {
         const fileNo = responseDirectory.children.findIndex((directory) => {
           return directory.name === lastDirectoryName;
         });
