@@ -14,7 +14,8 @@ p {
 
 .content {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
   padding: 12px;
   border-bottom: solid;
   background-color: rgba(0, 0, 255, 0.3);
@@ -22,10 +23,15 @@ p {
 .slideShowTimeArea {
   height: 24px;
   display: flex;
-  margin-top: 12px;
-  margin-right: 48px;
+  margin-right: 12px;
   margin-left: auto;
 }
+
+.slideShowLable {
+  text-overflow: ellipsis;
+  margin-right: 4px;
+}
+
 .slideShowTimeInput {
   width: 32px;
 }
@@ -35,4 +41,18 @@ p {
   width: 64px;
   margin-left: auto;
   border: solid;
+}
+
+.return, .home {
+  height: 40px;
+  width: 40px;
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+.icons, .options{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 12px;
 }
