@@ -15,8 +15,6 @@ type props = {
   fileDomain: string;
 };
 
-//TODO: 前のディレクトリに戻ったときに前のディレクトリでの最後のページにする
-// 現状は、今のディレクトリの最後のページになっている気がする
 export const Picture = ({
   directoryPath,
   files,
