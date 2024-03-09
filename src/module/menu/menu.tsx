@@ -25,7 +25,7 @@ export const Menu = ({ setSlideWaitTime }: props) => {
         <div className="content">
           <div className="icons">
           <Link to="/" className="home">
-            <img src="public/home.svg"></img>
+            <img src="/home.svg"></img>
           </Link>
           <a
             className="return"
@@ -33,7 +33,7 @@ export const Menu = ({ setSlideWaitTime }: props) => {
               location.href = returnOneHigherPage(location.href);
             }}
           >
-            <img src="public/return.svg"></img>
+            <img src="/return.svg"></img>
           </a>
           </div>
           <div className="options">
