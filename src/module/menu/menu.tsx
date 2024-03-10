@@ -39,14 +39,17 @@ export const Menu = ({ setSlideWaitTime }: props) => {
           <div className="options">
             <div className="slideShowTimeArea">
               <label className="slideShowLable">slide show time(s):</label>
-              <input
-                type="number"
+              <select
                 value={slideShowTime}
                 onChange={(e) =>
                   setSlideWaitTime(Number.parseInt(e.target.value))
                 }
                 className="slideShowTimeInput"
-              />
+              >
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <option value={n}>{n}</option>
+                ))}
+              </select>
             </div>
             <select
               value={selectSortByState}
