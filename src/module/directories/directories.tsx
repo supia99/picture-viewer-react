@@ -4,6 +4,7 @@ import { File } from "../../model/File";
 import { Picture } from "../picture/picture";
 import { PictureLink } from "../pictureComponent/link";
 import { getSortBy } from "../menu/menu";
+import "./directories.css";
 
 type props = {
   path: string;
@@ -57,22 +58,18 @@ export const Directories = ({ path }: props) => {
       fileDomain={fileDomain}
     />
   ) : (
-    <>
-      <ul>
-        {path && <LiLinkReturn path={path} />}
+      <div className="list">
         {files.map((file) => {
           return (
-            <li key={file.name}>
               <PictureLink
                 to={path === "/" ? `${file.name}` : `${path}/${file.name}`}
-              >
+                key={file.name} className="list-content">
                 {file.name}
               </PictureLink>
-            </li>
+            
           );
         })}
-      </ul>
-    </>
+      </div>
   );
 };
 

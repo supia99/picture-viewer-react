@@ -36,11 +36,16 @@ p {
 }
 
 .tab {
-  height: 32px;
-  width: 32px;
   position: absolute;
-  bottom: -32px;
-  right: 4px;
+  z-index: 1;
+  height: 40px;
+  width: 40px;
+  bottom: -56px;
+  right: 8px;
+  padding: 4px;
+  border-radius: 50%;
+  background-color: #d3d3d3;
+  opacity: 0.25;
 }
 
 .return, .home {
