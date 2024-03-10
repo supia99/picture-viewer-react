@@ -6,12 +6,16 @@ import { useLocation } from "react-router-dom";
 
 export const SlideWaitTimeContext = createContext(3);
 export default function PictureApp() {
-  const [slideWaitTime, setSlideWaitTime] = useState(3);
+  const [slideWaitTime, setSlideWaitTime] = useState(Number(localStorage.getItem("slideTimeSeconds")) || 3);
+  const setSlideWaitTimeAndSetLocal = (second: number) => {
+    setSlideWaitTime(second);
+    localStorage.setItem("slideTimeSeconds", second.toString())
+  }
   const path = useLocation().pathname;
   return (
     <SlideWaitTimeContext.Provider value={slideWaitTime}>
       <div className="app">
-        <Menu setSlideWaitTime={setSlideWaitTime} />
+        <Menu setSlideWaitTime={setSlideWaitTimeAndSetLocal} />
         <Directories path={path.replace("/picture", "")} />
       </div>
     </SlideWaitTimeContext.Provider>

@@ -5,7 +5,7 @@ import "./menu.css";
 import { SORT_BY_KEY_NAME, SortType } from "../../model/Constants";
 
 type props = {
-  setSlideWaitTime: Dispatch<React.SetStateAction<number>>;
+  setSlideWaitTime: (second: number) => void;
 };
 
 export const Menu = ({ setSlideWaitTime }: props) => {
