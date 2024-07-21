@@ -26,6 +26,7 @@
   width: 100%;
   /* contain: none; */
   display: flex;
+  position: relative;
   background-color: rgba(0, 0, 255, 0.3);
 }
 
@@ -74,5 +75,19 @@
 
 .only-reading {
   position: absolute;
-  top:-10000px
+  top: -10000px;
+}
+
+.delete {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+
+  height: 40px;
+  width: 40px;
+  padding: 4px;
+  border-radius: 50%;
+
+  background-color: #d3d3d3;
+  opacity: 0.5;
 }

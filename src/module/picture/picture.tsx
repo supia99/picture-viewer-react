@@ -50,7 +50,7 @@ export const Picture = ({
   useEffect(() => {
     slideShow();
   }, [slideShowCount]);
-  
+
   const slideShow = () => {
     if (isSlideShow) {
       const waitTime = slideShowWaitTime * 1000;
@@ -63,9 +63,17 @@ export const Picture = ({
 
   // ディレクトリ移動をしたときに移動した後のページ数を使用する
   useEffect(() => {
-    console.log(`useEffect(,[directoryPath]) firstOrlastPage ${firstOrlastPage} files.length: ${files.length} path: ${decodeURI(directoryPath)} prevPath: ${decodeURI(prevDirectoryPath)} nextPath: ${decodeURI(nextDirectoryPath)}, page:${firstOrlastPage === "first" ? 0 : files.length - 1}`);
+    console.log(
+      `useEffect(,[directoryPath]) firstOrlastPage ${firstOrlastPage} files.length: ${
+        files.length
+      } path: ${decodeURI(directoryPath)} prevPath: ${decodeURI(
+        prevDirectoryPath
+      )} nextPath: ${decodeURI(nextDirectoryPath)}, page:${
+        firstOrlastPage === "first" ? 0 : files.length - 1
+      }`
+    );
     setFileNo(firstOrlastPage === "first" ? 0 : files.length - 1);
-  }, [files])
+  }, [files]);
 
   const nextFile = () => {
     if (fileNo === files.length - 1) {
@@ -84,7 +92,7 @@ export const Picture = ({
   const nextDirectory = () => {
     setFirstOrlastPage("first");
     // 次ディレクトリ初回表示時に最大ページ数より大きいとエラーになるため0にする
-    setFileNo(0)
+    setFileNo(0);
     pictureNavigate(navigate, nextDirectoryPath);
   };
   const prevDirectory = () => {
@@ -108,6 +116,19 @@ export const Picture = ({
     }, waitTime);
   };
 
+  const deleteAction = () => {
+    // TODO: 削除時に次のディレクトリに移動させることに失敗している
+    setFirstOrlastPage("first");
+    pictureNavigate(navigate, nextDirectoryPath);
+    deleteDirectory(directoryPath);
+  };
+
+  // 確認ダイアログで確認をした上でactionを実行する
+  const confirmAction = (action: () => void, navigationMessage: string) => {
+    const confirm = window.confirm(navigationMessage);
+    confirm && action();
+  };
+
   // TODO: anyを解決する
   const keyOperation = (e: any) => {
     console.log(`e.key: ${e.key}`);
@@ -128,15 +149,12 @@ export const Picture = ({
         onOffSlideShow();
         break;
       case "Delete":
-        // TODO: 削除時に次のディレクトリに移動させることに失敗している
-        setFirstOrlastPage("first");
-        pictureNavigate(navigate, nextDirectoryPath);
-        deleteDirectory(directoryPath);
+        deleteAction();
         break;
     }
   };
 
-  return (    
+  return (
     <div
       className="pictureModule"
       onKeyDown={(e) => keyOperation(e)}
@@ -181,12 +199,20 @@ export const Picture = ({
         ) : (
           <div className="nextArea" onClick={() => nextFile()}></div>
         )}
+        <img
+          src="/delete.svg"
+          className="delete"
+          onClick={() => {
+            confirmAction(deleteAction, `以下を削除しますか？\n${decodeURI(directoryPath)}`);
+          }}
+        ></img>
       </div>
-      {
-        files.map((file) => 
-          <img className="only-reading" src={`http://${fileDomain}${directoryPath}/${file.name}`} />
-        )
-      }
+      {files.map((file) => (
+        <img
+          className="only-reading"
+          src={`http://${fileDomain}${directoryPath}/${file.name}`}
+        />
+      ))}
     </div>
   );
 };
