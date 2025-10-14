@@ -44,7 +44,7 @@ export const Directories = ({ path }: props) => {
         );
       });
     }
-
+    
     console.log("end useEffect");
   }, [path]);
 
@@ -77,7 +77,7 @@ const isPicture = (files: File[]): boolean => {
   if (files.length === 0) {
     return false;
   }
-  const pictureFileExtensions = ["jpeg", "jpg", "png"];
+  const pictureFileExtensions = ["jpeg", "jpg", "png", "webp"];
   return (
     pictureFileExtensions.filter((pictureFileExtension) =>
       files[0].name.includes(pictureFileExtension)
