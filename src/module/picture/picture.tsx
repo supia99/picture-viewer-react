@@ -63,6 +63,8 @@ export const Picture = ({
 
   // ディレクトリ移動をしたときに移動した後のページ数を使用する
   useEffect(() => {
+    files.sort((fileA, fileB) => fileA.name < fileB.name ? -1: 1);
+
     console.log(
       `useEffect(,[directoryPath]) firstOrlastPage ${firstOrlastPage} files.length: ${
         files.length
