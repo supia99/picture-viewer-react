@@ -20,3 +20,44 @@
   white-space: nowrap;
   width: 300px;
 }
+
+.navigate-area{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px 0;
+}
+
+.back, .forward {
+  height: -webkit-fill-available;
+  width: 320px;
+  background-color: lightgray;
+}
+
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+}
+
+.home {
+  height: 32px;
+  width: 32px;
+  margin-right: 16px;
+}
+
+.menu-button {
+  background-color: lightgray;
+  border: none;
+  padding: 8px 16px;
+  margin: 0 8px;
+  cursor: pointer;
+}
+
+.menu-button:hover {
+  background-color: gray;
+  color: white;
+}
