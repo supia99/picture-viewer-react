@@ -1,0 +1,46 @@
+
+.modal-opened {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  /* color: white; */
+  z-index: 1000;
+}
+
+.modal-closed {
+  display: none;
+}
+
+.modal-content {
+  position: absolute;
+  top: 55%;
+  left: 30%;
+  transform: translate(-30%, -60%);
+  background: whitesmoke;
+  padding: 16px;
+  border-radius: 8px;
+  max-width: 100%;
+  max-height: 80%;
+  overflow: auto;
+}
+
+.close-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: red;
+  border: none;
+  color: white;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
