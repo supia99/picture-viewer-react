@@ -11,6 +11,7 @@
 
 .list-item {
   margin: 8px;
+  position: relative;
 }
 
 .title {
@@ -60,4 +61,23 @@
 .menu-button:hover {
   background-color: gray;
   color: white;
+}
+
+.DL {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  height: 40px;
+  width: 40px;
+  background-color: darkgray;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 50%;
+  font-size: 12px;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.DL:hover {
+  background-color: gray;
 }

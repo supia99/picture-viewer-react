@@ -59,9 +59,7 @@ export const WNACG = ({ path }: props) => {
         </WnacgLink>
         <ul className="list">
           {datas.map((data, index) => (
-            <li key={index} className="list-item">
-              {/* TODO: モーダルでサンプル画像を表示したい */}
-              {/* TODO: ダウンロード機能をつけたい */}
+            <li key={index} className="list-item" id={data.id}>
               <div
                 className="link"
                 onClick={() => {
@@ -72,6 +70,7 @@ export const WNACG = ({ path }: props) => {
                 <img src={`https:${data.thumbnailUrl}`} alt={data.title} />
                 <p className="title">{data.title}</p>
               </div>
+              <img src="/download.svg" className="DL" onClick={(e) => download(e)}></img>
             </li>
           ))}
         </ul>
@@ -87,3 +86,14 @@ export const WNACG = ({ path }: props) => {
     </>
   );
 };
+
+const download = async (e: React.MouseEvent) => {
+  e.stopPropagation();
+  const id = e.currentTarget.parentElement?.id;
+  const title = e.currentTarget.parentElement?.querySelector("img")!.getAttribute("alt");
+  const axiosInstance = axios.create({
+    baseURL: `${import.meta.env.VITE_BACKEND_BASE_URL}/dl/wnacg`
+  });
+  const response = await axiosInstance.get(`/${id}`, {params: {title}});
+  alert(`ダウンロードが開始されました ${id} ${title} ${response.data}`);
+}
