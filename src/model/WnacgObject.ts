@@ -3,4 +3,6 @@ export type WnacgObject = {
   href: string,
   thumbnailUrl: string,
   id: string
+  pageNo: number
+  uploadDate: string
 }

@@ -53,6 +53,8 @@ export const WnacgModal = ({ isOpened, setIsOpenedModal, sampleId }: props) => {
     }
   }, [thisPage]);
 
+  // TODO: ZoomUpモーダル
+  // TODO: Modalモジュールに切り出し
   return (
     <>
       {isOpened ? (

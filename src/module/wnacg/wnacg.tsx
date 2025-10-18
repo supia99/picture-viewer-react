@@ -65,24 +65,34 @@ export const WNACG = ({ path }: props) => {
           {datas.map((data, index) => (
             <li key={index} className="list-item" id={data.id}>
               <div
-                className="link"
+                className="item-content"
                 onClick={() => {
                   setSampleId(data.id);
                   setIsOpenedModal(true);
                 }}
               >
                 <img src={`https:${data.thumbnailUrl}`} alt={data.title} />
-                <p className="title">{data.title}</p>
+                <div className="description">
+                  <p className="title">{data.title}</p>
+                  <p>
+                    {data.pageNo}P {data.uploadDate}
+                  </p>
+                </div>
               </div>
-              <img src="/download.svg" className="DL" onClick={(e) => download(e)}></img>
+              <img
+                src="/download.svg"
+                className="DL"
+                onClick={(e) => download(e)}
+              ></img>
             </li>
           ))}
-          <Toaster containerClassName=""/>
+          <div className="pagenation"></div>
         </ul>
         <WnacgLink to={`/${pageType}/${page + 1}`} className="forward">
           進む
         </WnacgLink>
       </div>
+      <Toaster />
       <WnacgModal
         isOpened={isOpenedModal}
         setIsOpenedModal={setIsOpenedModal}
@@ -95,15 +105,27 @@ export const WNACG = ({ path }: props) => {
 const download = async (e: React.MouseEvent) => {
   e.stopPropagation();
   const id = e.currentTarget.parentElement?.id;
-  const title = e.currentTarget.parentElement?.querySelector("img")!.getAttribute("alt");
+  const title = e.currentTarget.parentElement
+    ?.querySelector("img")!
+    .getAttribute("alt");
   const axiosInstance = axios.create({
-    baseURL: `${import.meta.env.VITE_BACKEND_BASE_URL}/dl/wnacg`
+    baseURL: `${import.meta.env.VITE_BACKEND_BASE_URL}/dl/wnacg`,
   });
-  const response = await axiosInstance.get(`/${id}`, {params: {title}});
-  if(response.data === "SUCCESS") {
-    toast.success(`SUCCESS ${id} ${title} ${response.data}`, {className: 'success-toast'})
+  const response = await axiosInstance.get(`/${id}`, { params: { title } });
+  if (response.data === "SUCCESS") {
+    toast.success(
+      `SUCCESS 
+      id: ${id} 
+      title: ${title}`,
+      { className: "success-toast" }
+    );
   } else {
-    toast.error(`DL FAILED ${id} ${title} ${response.data}`, {className: 'error-toast'})
+    toast.error(
+      `DL FAILED 
+      id: ${id}
+      title: ${title} ${response.data}`,
+      { className: "error-toast" }
+    );
     console.error(`ダウンロードに失敗しました ${id} ${title} ${response.data}`);
   }
-}
+};
