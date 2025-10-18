@@ -6,6 +6,7 @@ import { WnacgLink } from "./wnacgLInk";
 import { Link } from "react-router-dom";
 import { WnacgModal } from "./wnacgModal";
 import { toast, Toaster } from "react-hot-toast";
+import { WnacgPagenation } from "./wnacgPagenation";
 
 const url = `${import.meta.env.VITE_BACKEND_BASE_URL}/html/wnacg`;
 
@@ -19,6 +20,9 @@ export const WNACG = ({ path }: props) => {
   const [page, setPage] = useState(1);
   const [isOpenedModal, setIsOpenedModal] = useState(false);
   const [sampleId, setSampleId] = useState("");
+  const [thisPage, setThisPage] = useState(1);
+  const [maxPage, setMaxPage] = useState(1);
+  const [pageArray, setPageArray] = useState<number[]>([]);
 
   useEffect(() => {
     const pathParts = path.split("/");
@@ -29,9 +33,22 @@ export const WNACG = ({ path }: props) => {
     const requestUrl = `${url}/${tmpPageType}/${tmpPage}`;
     console.log(`url: ${requestUrl} pageType: ${tmpPageType} page: ${tmpPage}`);
     (async () => {
-      const response = (await axios.get(requestUrl)) as { data: WnacgObject[] };
-      setDatas(response.data);
+      const response = (await axios.get(requestUrl)) as {
+        data: { data: WnacgObject[]; thisPage: number; maxPage: number };
+      };
+      const thisPageNumber = Number(response.data.thisPage);
+      const maxPageNumber = Number(response.data.maxPage);
+      setDatas(response.data.data);
+      setThisPage(thisPageNumber);
+      setMaxPage(maxPageNumber);
       console.log(response.data);
+      const tmpPageArray = [...Array(7)]
+          .map((_, i) => thisPageNumber + i - 3)
+          .filter((i) => i > 0 && i <= maxPageNumber)
+      setPageArray(
+        tmpPageArray
+      );
+      console.log(`tmpPageArray: ${tmpPageArray} maxPage: ${maxPageNumber}, thisPage: ${thisPageNumber}`);
     })();
   }, [path]);
 
@@ -86,11 +103,42 @@ export const WNACG = ({ path }: props) => {
               ></img>
             </li>
           ))}
-          <div className="pagenation"></div>
         </ul>
         <WnacgLink to={`/${pageType}/${page + 1}`} className="forward">
           進む
         </WnacgLink>
+      </div>
+      <div className="pagenation">
+        {!pageArray.includes(1) && (
+          <WnacgLink key={1} to={`/${pageType}/1`} className="page first-page">
+            1
+          </WnacgLink>
+        )}
+        {!pageArray.includes(1) && pageArray[0] - 1 !== 1 && (
+          <span className="skip-page">・・・</span>
+        )}
+        {pageArray.map((v) => (
+          <WnacgLink
+            key={v}
+            to={`/${pageType}/${v}`}
+            className={v === thisPage ? "this-page" : "page"}
+          >
+            {v}
+          </WnacgLink>
+        ))}
+        {!pageArray.includes(maxPage) &&
+          pageArray[pageArray.length - 1] + 1 !== maxPage && (
+            <span className="skip-page">・・・</span>
+          )}
+        {!pageArray.includes(maxPage) && (
+          <WnacgLink
+            key={maxPage}
+            to={`/${pageType}/${maxPage}`}
+            className="page last-page"
+          >
+            {maxPage}
+          </WnacgLink>
+        )}
       </div>
       <Toaster />
       <WnacgModal

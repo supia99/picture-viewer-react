@@ -7,6 +7,8 @@
   flex-wrap: wrap;
   justify-content: flex-start;
   align-content: flex-start;
+  gap: 8px;
+  justify-content: center;
 }
 
 .list-item {
@@ -104,4 +106,41 @@
 .error-toast {
   background-color: #f8d7da;
   color: #721c24;
+}
+
+.pagenation {
+  margin: 32px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.this-page {
+  font-size: 2rem;
+  text-decoration: none;
+  height: 60px;
+  width: 60px;
+  margin: 4px 0;
+  border-radius: 50%;
+  border: none;
+  color: white;
+  background-color: black;
+}
+
+.page {
+  cursor: pointer;
+  font-size: 2rem;
+  text-decoration: none;
+  height: 60px;
+  width: 60px;
+  margin: 4px 0;
+  border-radius: 50%;
+  border: none;
+  color: black;
+  background-color: white;
+}
+
+.page ~ .page, .this-page ~ .page, .page ~ .this-page, .page ~ .skip-page, .skip-page ~ .page {
+  margin-left: 16px;
 }
