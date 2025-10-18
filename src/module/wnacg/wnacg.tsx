@@ -52,6 +52,9 @@ export const WNACG = ({ path }: props) => {
         <WnacgLink to="/雑誌/1" className="menu-button">
           雑誌
         </WnacgLink>
+        <WnacgLink to="/Cosplay/1" className="menu-button">
+          コスプレ
+        </WnacgLink>
       </div>
       <div className="navigate-area">
         <WnacgLink to={`/${pageType}/${page - 1}`} className="back">
