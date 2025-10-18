@@ -62,12 +62,6 @@ export const WnacgModal = ({ isOpened, setIsOpenedModal, sampleId }: props) => {
         >
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h2>{title}</h2>
-            <div
-              className="close-button"
-              onClick={() => setIsOpenedModal && setIsOpenedModal(false)}
-            >
-              ×
-            </div>
             <div className="image-gallery">
               {samplePictures.map((picture, index) => (
                 <div key={index}>
