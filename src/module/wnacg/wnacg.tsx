@@ -5,6 +5,7 @@ import "./wnacg.css";
 import { WnacgLink } from "./wnacgLInk";
 import { Link } from "react-router-dom";
 import { WnacgModal } from "./wnacgModal";
+import { toast, Toaster } from "react-hot-toast";
 
 const url = `${import.meta.env.VITE_BACKEND_BASE_URL}/html/wnacg`;
 
@@ -76,6 +77,7 @@ export const WNACG = ({ path }: props) => {
               <img src="/download.svg" className="DL" onClick={(e) => download(e)}></img>
             </li>
           ))}
+          <Toaster containerClassName=""/>
         </ul>
         <WnacgLink to={`/${pageType}/${page + 1}`} className="forward">
           進む
@@ -98,5 +100,10 @@ const download = async (e: React.MouseEvent) => {
     baseURL: `${import.meta.env.VITE_BACKEND_BASE_URL}/dl/wnacg`
   });
   const response = await axiosInstance.get(`/${id}`, {params: {title}});
-  alert(`ダウンロードが開始されました ${id} ${title} ${response.data}`);
+  if(response.data === "SUCCESS") {
+    toast.success(`SUCCESS ${id} ${title} ${response.data}`, {className: 'success-toast'})
+  } else {
+    toast.error(`DL FAILED ${id} ${title} ${response.data}`, {className: 'error-toast'})
+    console.error(`ダウンロードに失敗しました ${id} ${title} ${response.data}`);
+  }
 }
