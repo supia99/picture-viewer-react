@@ -17,14 +17,14 @@
 
 .modal-content {
   position: absolute;
-  top: 55%;
-  left: 30%;
-  transform: translate(-30%, -60%);
+  top: 50%;
+  left: 10%;
+  transform: translate(-5%, -50%);
   background: whitesmoke;
-  padding: 16px;
+  padding: 8px 16px;
   border-radius: 8px;
   max-width: 100%;
-  max-height: 80%;
+  max-height: 90%;
   overflow: auto;
 }
 
@@ -43,4 +43,33 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  justify-content: center;
+}
+
+.pagenation {
+  margin: 32px 0;
+  text-align: center;
+}
+
+.thisPage {
+  font-weight: bold;
+  font-size: 3rem;
+  text-decoration: underline;
+  height: 60px;
+  width: 60px;
+  margin: 4px 0;
+  border-radius: 50%;
+}
+
+.page {
+  cursor: pointer;
+  font-size: 2rem;
+  height: 60px;
+  width: 60px;
+  margin: 4px 0;
+  border-radius: 50%;
+}
+
+.page ~ .page, .thisPage ~ .page, .page ~ .thisPage {
+  margin-left: 16px;
 }
