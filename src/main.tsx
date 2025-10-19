@@ -20,11 +20,6 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/doujinnomori/*",
-    element: <DoujinnomoriApp />,
-    errorElement: <ErrorPage />,
-  },
-  {
     path: "/wnacg/*",
     element: <WNACGApp />,
     errorElement: <ErrorPage />,

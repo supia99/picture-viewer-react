@@ -5,7 +5,6 @@ export const Home = () => {
   return (
     <div className={styles["menu-container"]}>
       <Link to="/picture" className={styles["menu-link"]}>picture</Link>
-      <Link to="/doujinnomori" className={styles["menu-link"]}>doujinnomori</Link>
       <Link to="/wnacg" className={styles["menu-link"]}>wnacg</Link>
     </div>
   )

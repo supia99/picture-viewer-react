@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { WnacgModal } from "./wnacgModal";
 import { toast, Toaster } from "react-hot-toast";
 
-const url = `${import.meta.env.VITE_BACKEND_BASE_URL}/html/wnacg`;
+const url = `${import.meta.env.VITE_BACKEND_BASE_URL}/wnacg/html`;
 
 type props = {
   path: string;
@@ -80,7 +80,7 @@ export const WNACG = ({ path }: props) => {
         </WnacgLink>
         <ul className={styles.list}>
           {datas.map((data, index) => (
-            <li key={"data" + index} className={styles["list-item"]}>
+            <li key={"data" + index} id={data.id} className={styles["list-item"]}>
               <div
                 className={styles["item-content"]}
                 onClick={() => {
@@ -98,6 +98,7 @@ export const WNACG = ({ path }: props) => {
               </div>
               <img
                 src="/download.svg"
+                id={data.id}
                 className={styles["DL"]}
                 onClick={(e) => download(e)}
               ></img>
@@ -161,7 +162,7 @@ const download = async (e: React.MouseEvent) => {
     ?.querySelector("img")!
     .getAttribute("alt");
   const axiosInstance = axios.create({
-    baseURL: `${import.meta.env.VITE_BACKEND_BASE_URL}/dl/wnacg`,
+    baseURL: `${import.meta.env.VITE_BACKEND_BASE_URL}/wnacg/dl`,
   });
   const response = await axiosInstance.get(`/${id}`, { params: { title } });
   if (response.data === "SUCCESS") {

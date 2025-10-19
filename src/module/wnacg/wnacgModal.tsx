@@ -31,7 +31,7 @@ export const WnacgModal = ({ isOpened, setIsOpenedModal, sampleId }: props) => {
     if (isOpened && sampleId) {
       (async () => {
         const axiosWnacg = axios.create({
-          baseURL: `${import.meta.env.VITE_BACKEND_BASE_URL}/sample/wnacg`,
+          baseURL: `${import.meta.env.VITE_BACKEND_BASE_URL}/wnacg/sample`,
         });
         const response = await axiosWnacg.get(`/${sampleId}/page/${thisPage}`);
         setTitle(response.data.title);
@@ -76,7 +76,6 @@ export const WnacgModal = ({ isOpened, setIsOpenedModal, sampleId }: props) => {
               {pageArray.length > 0 && !pageArray.includes(1) && (
                 <button
                   key={1}
-                  // FIXME: レンダリングが動作しない
                   onClick={() => {
                     setThisPage(1);
                     console.log(`setThisPage: 1`);
