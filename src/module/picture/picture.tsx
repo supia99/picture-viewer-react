@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { deleteDirectory } from "../../api/deleteDirectory";
 import { SlideWaitTimeContext } from "../../PictureApp";
 import { File } from "../../model/File";
-import "./picture.css";
+import styles from "./picture.module.css";
 import { PictureLink } from "../pictureComponent/link";
 import { pictureNavigate } from "../pictureComponent/navigate";
 
@@ -158,32 +158,32 @@ export const Picture = ({
 
   return (
     <div
-      className="pictureModule"
+      className={styles.pictureModule}
       onKeyDown={(e) => keyOperation(e)}
       tabIndex={0}
       ref={pictureModuleRef}
     >
-      <div className="navigateArea" style={imageStyle}>
+      <div className={styles.navigateArea} style={imageStyle}>
         {fileNo === 0 ? (
           <PictureLink
-            className="prevArea"
+            className={styles.prevArea}
             to={prevDirectoryPath}
             onClick={() => setFirstOrlastPage("last")}
           ></PictureLink>
         ) : (
-          <div className="prevArea" onClick={() => prevFile()}></div>
+          <div className={styles.prevArea} onClick={() => prevFile()}></div>
         )}
-        <div className="directoryArea">
+        <div className={styles.directoryArea}>
           <PictureLink
-            className="prevDirectoryArea"
+            className={styles.prevDirectoryArea}
             to={prevDirectoryPath}
             onClick={() => {
               setFirstOrlastPage("last");
             }}
           ></PictureLink>
-          <div className="middleArea" onClick={onOffSlideShow}></div>
+          <div className={styles.middleArea} onClick={onOffSlideShow}></div>
           <PictureLink
-            className="nextDirectoryArea"
+            className={styles.nextDirectoryArea}
             to={nextDirectoryPath}
             onClick={() => {
               setFirstOrlastPage("first");
@@ -192,18 +192,18 @@ export const Picture = ({
         </div>
         {fileNo === files.length - 1 ? (
           <PictureLink
-            className="nextArea"
+            className={styles.nextArea}
             to={nextDirectoryPath}
             onClick={() => {
               setFirstOrlastPage("first");
             }}
           ></PictureLink>
         ) : (
-          <div className="nextArea" onClick={() => nextFile()}></div>
+          <div className={styles.nextArea} onClick={() => nextFile()}></div>
         )}
         <img
           src="/delete.svg"
-          className="delete"
+          className={styles.delete}
           onClick={() => {
             confirmAction(deleteAction, `以下を削除しますか？\n${decodeURI(directoryPath)}`);
           }}
@@ -211,7 +211,7 @@ export const Picture = ({
       </div>
       {files.map((file) => (
         <img
-          className="only-reading"
+          className={styles["only-reading"]}
           src={`http://${fileDomain}${directoryPath}/${file.name}`}
         />
       ))}

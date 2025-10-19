@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import "./wnacgModal.css";
+import styles from "./wnacgModal.module.css";
 
 type props = {
   isOpened: boolean;
@@ -40,7 +40,9 @@ export const WnacgModal = ({ isOpened, setIsOpenedModal, sampleId }: props) => {
           .map((_, i) => 1 + i - 3)
           .filter((i) => i > 0 && i <= maxPageNumber);
         setPageArray(tmpPageArray);
-        console.log(`tmpPageArray: ${tmpPageArray} maxPage: ${maxPageNumber}, thisPage: 1`);
+        console.log(
+          `tmpPageArray: ${tmpPageArray} maxPage: ${maxPageNumber}, thisPage: 1`
+        );
       })();
     }
   }, [isOpened, sampleId]);
@@ -71,12 +73,15 @@ export const WnacgModal = ({ isOpened, setIsOpenedModal, sampleId }: props) => {
     <>
       {isOpened ? (
         <div
-          className="modal-opened"
+          className={styles["modal-opened"]}
           onClick={() => setIsOpenedModal && setIsOpenedModal(false)}
         >
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div
+            className={styles["modal-content"]}
+            onClick={(e) => e.stopPropagation()}
+          >
             <h2>{title}</h2>
-            <div className="image-gallery">
+            <div className={styles["image-gallery"]}>
               {samplePictures.map((picture, index) => (
                 <div key={index}>
                   <img src={picture.sampleUrl} alt={`Sample ${index}`} />
@@ -84,7 +89,7 @@ export const WnacgModal = ({ isOpened, setIsOpenedModal, sampleId }: props) => {
                 </div>
               ))}
             </div>
-            <div className="pagenation">
+            <div className={styles.pagenation}>
               {!pageArray.includes(1) && (
                 <button
                   key={1}
@@ -93,32 +98,32 @@ export const WnacgModal = ({ isOpened, setIsOpenedModal, sampleId }: props) => {
                     setThisPage(1);
                     console.log(`setThisPage: 1`);
                   }}
-                  className="page first-page"
+                  className={`${styles.page} ${styles["first-page"]}`}
                 >
                   1
                 </button>
               )}
               {!pageArray.includes(1) && pageArray[0] - 1 !== 1 && (
-                <span className="skip-page">・・・</span>
+                <span className={styles["skip-page"]}>・・・</span>
               )}
               {pageArray.map((v) => (
                 <button
                   key={v}
                   onClick={() => setThisPage(v)}
-                  className={v === thisPage ? "this-page" : "page"}
+                  className={v === thisPage ? styles["this-page"] : styles.page}
                 >
                   {v}
                 </button>
               ))}
               {!pageArray.includes(maxPage) &&
                 pageArray[pageArray.length - 1] + 1 !== maxPage && (
-                  <span className="skip-page">・・・</span>
+                  <span className={styles["skip-page"]}>・・・</span>
                 )}
               {!pageArray.includes(maxPage) && (
                 <button
                   key={maxPage}
                   onClick={() => setThisPage(maxPage)}
-                  className="page last-page"
+                  className={`${styles.page} ${styles["last-page"]}`}
                 >
                   {maxPage}
                 </button>
@@ -127,7 +132,7 @@ export const WnacgModal = ({ isOpened, setIsOpenedModal, sampleId }: props) => {
           </div>
         </div>
       ) : (
-        <div className="modal-closed"></div>
+        <div className={styles["modal-closed"]}></div>
       )}
     </>
   );

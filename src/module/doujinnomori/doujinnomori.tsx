@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { DoujinnmoriObject } from "../../model/DoujinnomoriObject";
 import { getDoujinnomori } from "../../api/getDoujinnomori";
-import "./doujinnomori.css";
+import styles from "./doujinnomori.module.css";
 import { DmLink } from "../doujinnomoriComponent/link";
 import { saveDoujinnomori } from "../../api/saveDoujinnomori";
 import { escapeURI } from "../../util/escapeURI";
@@ -55,7 +55,7 @@ export const Doujinnomori = ({ path }: { path: string }) => {
         // TODO: 10進む
         dmNavigate(
           navigate,
-          path ? "/" +( Number(path.replace("/", "")) + 10) : ""
+          path ? "/" + (Number(path.replace("/", "")) + 10) : ""
         );
         break;
     }
@@ -63,28 +63,28 @@ export const Doujinnomori = ({ path }: { path: string }) => {
 
   dmInfos.length && console.log(`lenght: ${dmInfos.length}`);
   return (
-    <div className="picture-container">
+    <div className={styles["picture-container"]}>
       <DmLink
         to={path ? "/" + (Number(path.replace("/", "")) - 1) : "/1"}
-        className="prev"
+        className={styles.prev}
       >
         ＜
       </DmLink>
       <ul
-        className="comic-card-list"
+        className={styles["comic-card-list"]}
         onKeyDown={(e) => keyOperation(e)}
         tabIndex={0}
         ref={dmModuleRef}
       >
         {dmInfos.map((dmInfo) => (
-          <li className="comic-card" key={dmInfo.id}>
+          <li className={styles["comic-card"]} key={dmInfo.id}>
             <p
               className={
                 new Date(dmInfo.modified).getFullYear() -
                   new Date(dmInfo.created).getFullYear() >
                 0
-                  ? "comic-createdAt-old"
-                  : "comic-createdAt"
+                  ? styles["comic-createdAt-old"]
+                  : styles["comic-createdAt"]
               }
             >
               createdAt: {new Date(dmInfo.created).toLocaleDateString()}
@@ -94,7 +94,7 @@ export const Doujinnomori = ({ path }: { path: string }) => {
             </p> */}
             <img
               src={dmInfo.thumbnailUrl}
-              className="comic-thumbnail"
+              className={styles["comic-thumbnail"]}
               onClick={() => {
                 saveDoujinnomori({
                   uuid: escapeURI(dmInfo.uuid),
@@ -103,12 +103,12 @@ export const Doujinnomori = ({ path }: { path: string }) => {
               }}
             />
             {/* TODO: タイトルを押したときにタブが開き、検索がされる */}
-            <p className="comic-name">{dmInfo.name}</p>
+            <p className={styles["comic-name"]}>{dmInfo.name}</p>
           </li>
         ))}
       </ul>
       <DmLink
-        className="next"
+        className={styles.next}
         to={path ? "/" + (Number(path.replace("/", "")) + 1) : "/2"}
       >
         ＞

@@ -38,19 +38,19 @@
   font-size: 12px;
 }
 
-.navigate-area{
+.navigate-area {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 16px 0;
 }
 
-.back, .forward {
+.back,
+.forward {
   height: -webkit-fill-available;
   width: 320px;
   background-color: lightgray;
 }
-
 
 .header {
   display: flex;
@@ -126,6 +126,7 @@
   border: none;
   color: white;
   background-color: black;
+  text-align: center;
 }
 
 .page {
@@ -139,8 +140,13 @@
   border: none;
   color: black;
   background-color: white;
+  text-align: center;
 }
 
-.page ~ .page, .this-page ~ .page, .page ~ .this-page, .page ~ .skip-page, .skip-page ~ .page {
+.page ~ .page,
+.this-page ~ .page,
+.page ~ .this-page,
+.page ~ .skip-page,
+.skip-page ~ .page {
   margin-left: 16px;
 }

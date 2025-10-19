@@ -4,7 +4,7 @@ import { File } from "../../model/File";
 import { Picture } from "../picture/picture";
 import { PictureLink } from "../pictureComponent/link";
 import { getSortBy } from "../menu/menu";
-import "./directories.css";
+import styles from "./directories.module.css";
 
 type props = {
   path: string;
@@ -58,12 +58,12 @@ export const Directories = ({ path }: props) => {
       fileDomain={fileDomain}
     />
   ) : (
-      <div className="list">
+      <div className={styles.list}>
         {files.map((file) => {
           return (
               <PictureLink
                 to={path === "/" ? `${file.name}` : `${path}/${file.name}`}
-                key={file.name} className="list-content">
+                key={file.name} className={styles["list-content"]}>
                 {file.name}
               </PictureLink>
             

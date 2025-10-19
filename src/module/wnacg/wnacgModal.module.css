@@ -1,4 +1,3 @@
-
 .modal-opened {
   display: block;
   position: fixed;
@@ -51,7 +50,6 @@
   text-align: center;
 }
 
-
 .this-page {
   font-size: 2rem;
   text-decoration: none;
@@ -77,6 +75,10 @@
   background-color: white;
 }
 
-.page ~ .page, .this-page ~ .page, .page ~ .this-page, .page ~ .skip-page, .skip-page ~ .page {
+.page ~ .page,
+.this-page ~ .page,
+.page ~ .this-page,
+.page ~ .skip-page,
+.skip-page ~ .page {
   margin-left: 16px;
 }

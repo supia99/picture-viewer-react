@@ -1,6 +1,0 @@
-.app {
-  height: calc(100vh - 16px);
-  display: flex;
-  flex-direction: column;
-  /* background-color: rgba(84, 133, 122, 0.226); */
-}

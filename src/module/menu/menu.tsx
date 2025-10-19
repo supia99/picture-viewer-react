@@ -1,7 +1,7 @@
 import { Dispatch, useContext, useEffect, useState } from "react";
 import { SlideWaitTimeContext } from "../../PictureApp";
 import { Link } from "react-router-dom";
-import "./menu.css";
+import styles from "./menu.module.css";
 import { SORT_BY_KEY_NAME, SortType } from "../../model/Constants";
 
 type props = {
@@ -20,15 +20,15 @@ export const Menu = ({ setSlideWaitTime }: props) => {
   }, []);
 
   return (
-    <div className="menu">
+    <div className={styles.menu}>
       {isShowMenu && (
-        <div className="content">
-          <div className="icons">
-            <Link to="/" className="home">
+        <div className={styles.content}>
+          <div className={styles.icons}>
+            <Link to="/" className={styles.home}>
               <img src="/home.svg"></img>
             </Link>
             <a
-              className="return"
+              className={styles.return}
               onClick={() => {
                 location.href = returnOneHigherPage(location.href);
               }}
@@ -36,15 +36,15 @@ export const Menu = ({ setSlideWaitTime }: props) => {
               <img src="/return.svg"></img>
             </a>
           </div>
-          <div className="options">
-            <div className="slideShowTimeArea">
-              <label className="slideShowLable">slide show time(s):</label>
+          <div className={styles.options}>
+            <div className={styles.slideShowTimeArea}>
+              <label className={styles.slideShowLable}>slide show time(s):</label>
               <select
                 value={slideShowTime}
                 onChange={(e) =>
                   setSlideWaitTime(Number.parseInt(e.target.value))
                 }
-                className="slideShowTimeInput"
+                className={styles.slideShowTimeInput}
               >
                 {[1, 2, 3, 4, 5].map((n) => (
                   <option value={n}>{n}</option>
@@ -66,7 +66,7 @@ export const Menu = ({ setSlideWaitTime }: props) => {
       )}
       <img
         src={isShowMenu ? "/up.svg" : "/down.svg"}
-        className="tab"
+        className={styles.tab}
         onClick={() => {
           setIsShowMenu(!isShowMenu);
         }}

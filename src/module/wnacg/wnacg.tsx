@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { WnacgObject } from "../../model/WnacgObject";
 import axios from "axios";
-import "./wnacg.css";
+import styles from "./wnacg.module.css";
 import { WnacgLink } from "./wnacgLInk";
 import { Link } from "react-router-dom";
 import { WnacgModal } from "./wnacgModal";
@@ -42,54 +42,54 @@ export const WNACG = ({ path }: props) => {
       setMaxPage(maxPageNumber);
       console.log(response.data);
       const tmpPageArray = [...Array(7)]
-          .map((_, i) => thisPageNumber + i - 3)
-          .filter((i) => i > 0 && i <= maxPageNumber)
-      setPageArray(
-        tmpPageArray
+        .map((_, i) => thisPageNumber + i - 3)
+        .filter((i) => i > 0 && i <= maxPageNumber);
+      setPageArray(tmpPageArray);
+      console.log(
+        `tmpPageArray: ${tmpPageArray} maxPage: ${maxPageNumber}, thisPage: ${thisPageNumber}`
       );
-      console.log(`tmpPageArray: ${tmpPageArray} maxPage: ${maxPageNumber}, thisPage: ${thisPageNumber}`);
     })();
   }, [path]);
 
   return (
     <>
-      <div className="header">
-        <Link to="/" className="home">
+      <div className={styles.header}>
+        <Link to="/" className={styles.home}>
           <img src="/home.svg"></img>
         </Link>
-        <WnacgLink to="/同人誌/1" className="menu-button">
+        <WnacgLink to="/同人誌/1" className={styles["menu-button"]}>
           同人誌
         </WnacgLink>
-        <WnacgLink to="/CG/1" className="menu-button">
+        <WnacgLink to="/CG/1" className={styles["menu-button"]}>
           CG
         </WnacgLink>
-        <WnacgLink to="/単行本/1" className="menu-button">
+        <WnacgLink to="/単行本/1" className={styles["menu-button"]}>
           単行本
         </WnacgLink>
-        <WnacgLink to="/雑誌/1" className="menu-button">
+        <WnacgLink to="/雑誌/1" className={styles["menu-button"]}>
           雑誌
         </WnacgLink>
-        <WnacgLink to="/Cosplay/1" className="menu-button">
+        <WnacgLink to="/Cosplay/1" className={styles["menu-button"]}>
           コスプレ
         </WnacgLink>
       </div>
-      <div className="navigate-area">
-        <WnacgLink to={`/${pageType}/${page - 1}`} className="back">
+      <div className={styles["navigate-area"]}>
+        <WnacgLink to={`/${pageType}/${page - 1}`} className={styles.back}>
           戻る
         </WnacgLink>
-        <ul className="list">
+        <ul className={styles.list}>
           {datas.map((data, index) => (
-            <li key={index} className="list-item" id={data.id}>
+            <li key={index} className={styles["list-item"]}>
               <div
-                className="item-content"
+                className={styles["item-content"]}
                 onClick={() => {
                   setSampleId(data.id);
                   setIsOpenedModal(true);
                 }}
               >
                 <img src={`https:${data.thumbnailUrl}`} alt={data.title} />
-                <div className="description">
-                  <p className="title">{data.title}</p>
+                <div className={styles["description"]}>
+                  <p className={styles["title"]}>{data.title}</p>
                   <p>
                     {data.pageNo}P {data.uploadDate}
                   </p>
@@ -97,43 +97,47 @@ export const WNACG = ({ path }: props) => {
               </div>
               <img
                 src="/download.svg"
-                className="DL"
+                className={styles["DL"]}
                 onClick={(e) => download(e)}
               ></img>
             </li>
           ))}
         </ul>
-        <WnacgLink to={`/${pageType}/${page + 1}`} className="forward">
+        <WnacgLink to={`/${pageType}/${page + 1}`} className={styles.forward}>
           進む
         </WnacgLink>
       </div>
-      <div className="pagenation">
+      <div className={styles["pagenation"]}>
         {!pageArray.includes(1) && (
-          <WnacgLink key={1} to={`/${pageType}/1`} className="page first-page">
+          <WnacgLink
+            key={1}
+            to={`/${pageType}/1`}
+            className={styles["page"] + " " + styles["first-page"]}
+          >
             1
           </WnacgLink>
         )}
         {!pageArray.includes(1) && pageArray[0] - 1 !== 1 && (
-          <span className="skip-page">・・・</span>
+          <span className={styles["skip-page"]}>・・・</span>
         )}
         {pageArray.map((v) => (
           <WnacgLink
             key={v}
             to={`/${pageType}/${v}`}
-            className={v === thisPage ? "this-page" : "page"}
+            className={v === thisPage ? styles["this-page"] : styles["page"]}
           >
             {v}
           </WnacgLink>
         ))}
         {!pageArray.includes(maxPage) &&
           pageArray[pageArray.length - 1] + 1 !== maxPage && (
-            <span className="skip-page">・・・</span>
+            <span className={styles["skip-page"]}>・・・</span>
           )}
         {!pageArray.includes(maxPage) && (
           <WnacgLink
             key={maxPage}
             to={`/${pageType}/${maxPage}`}
-            className="page last-page"
+            className={styles["page"] + " " + styles["last-page"]}
           >
             {maxPage}
           </WnacgLink>
