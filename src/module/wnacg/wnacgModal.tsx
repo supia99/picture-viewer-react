@@ -22,50 +22,33 @@ export const WnacgModal = ({ isOpened, setIsOpenedModal, sampleId }: props) => {
 
   useEffect(() => {
     if (isOpened && sampleId) {
-      // Fetch sample pictures based on sampleId
-      (async () => {
-        const axiosWnacg = axios.create({
-          baseURL: `${import.meta.env.VITE_BACKEND_BASE_URL}/sample/wnacg`,
-        });
-        const response = await axiosWnacg.get(`/${sampleId}/page/1`);
-        setTitle(response.data.title);
-        setSamplePictures(response.data.pictureUrls);
-        setThisPage(1);
-        const maxPageNumber = Number(response.data.maxPage);
-        setMaxPage(maxPageNumber);
-        console.log(
-          `thisPage: ${response.data.thisPage} maxPage: ${maxPageNumber}`
-        );
-        const tmpPageArray = [...Array(7)]
-          .map((_, i) => 1 + i - 3)
-          .filter((i) => i > 0 && i <= maxPageNumber);
-        setPageArray(tmpPageArray);
-        console.log(
-          `tmpPageArray: ${tmpPageArray} maxPage: ${maxPageNumber}, thisPage: 1`
-        );
-      })();
+      // Reset to page 1 when modal opens
+      setThisPage(1);
     }
   }, [isOpened, sampleId]);
 
   useEffect(() => {
-    if (isOpened && sampleId && thisPage !== 1) {
+    if (isOpened && sampleId) {
       (async () => {
         const axiosWnacg = axios.create({
           baseURL: `${import.meta.env.VITE_BACKEND_BASE_URL}/sample/wnacg`,
         });
         const response = await axiosWnacg.get(`/${sampleId}/page/${thisPage}`);
+        setTitle(response.data.title);
         setSamplePictures(response.data.pictureUrls);
+        const maxPageNumber = Number(response.data.maxPage);
+        setMaxPage(maxPageNumber);
         console.log(
-          `useEffect[thisPage]thisPage: ${response.data.thisPage} maxPage: ${response.data.maxPage}`
+          `useEffect[thisPage]thisPage: ${response.data.thisPage} maxPage: ${maxPageNumber}`
         );
         const tmpPageArray = [...Array(7)]
           .map((_, i) => thisPage + i - 3)
-          .filter((i) => i > 0 && i <= maxPage);
+          .filter((i) => i > 0 && i <= maxPageNumber);
         setPageArray(tmpPageArray);
         console.log(`tmpPageArray: ${tmpPageArray}`);
       })();
     }
-  }, [thisPage]);
+  }, [thisPage, isOpened, sampleId]);
 
   // TODO: ZoomUpモーダル
   // TODO: Modalモジュールに切り出し
@@ -90,7 +73,7 @@ export const WnacgModal = ({ isOpened, setIsOpenedModal, sampleId }: props) => {
               ))}
             </div>
             <div className={styles.pagenation}>
-              {!pageArray.includes(1) && (
+              {pageArray.length > 0 && !pageArray.includes(1) && (
                 <button
                   key={1}
                   // FIXME: レンダリングが動作しない
@@ -98,7 +81,7 @@ export const WnacgModal = ({ isOpened, setIsOpenedModal, sampleId }: props) => {
                     setThisPage(1);
                     console.log(`setThisPage: 1`);
                   }}
-                  className={`${styles.page} ${styles["first-page"]}`}
+                  className={styles.page}
                 >
                   1
                 </button>
@@ -123,7 +106,7 @@ export const WnacgModal = ({ isOpened, setIsOpenedModal, sampleId }: props) => {
                 <button
                   key={maxPage}
                   onClick={() => setThisPage(maxPage)}
-                  className={`${styles.page} ${styles["last-page"]}`}
+                  className={styles.page}
                 >
                   {maxPage}
                 </button>
