@@ -6,7 +6,6 @@ import { WnacgLink } from "./wnacgLInk";
 import { Link } from "react-router-dom";
 import { WnacgModal } from "./wnacgModal";
 import { toast, Toaster } from "react-hot-toast";
-import { WnacgPagenation } from "./wnacgPagenation";
 
 const url = `${import.meta.env.VITE_BACKEND_BASE_URL}/html/wnacg`;
 
