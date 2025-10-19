@@ -48,6 +48,7 @@ export const WNACG = ({ path }: props) => {
       console.log(
         `tmpPageArray: ${tmpPageArray} maxPage: ${maxPageNumber}, thisPage: ${thisPageNumber}`
       );
+      console.log('Debug - tmpPageArray includes 1:', tmpPageArray.includes(1));
     })();
   }, [path]);
 
@@ -79,7 +80,7 @@ export const WNACG = ({ path }: props) => {
         </WnacgLink>
         <ul className={styles.list}>
           {datas.map((data, index) => (
-            <li key={index} className={styles["list-item"]}>
+            <li key={"data" + index} className={styles["list-item"]}>
               <div
                 className={styles["item-content"]}
                 onClick={() => {
@@ -108,11 +109,11 @@ export const WNACG = ({ path }: props) => {
         </WnacgLink>
       </div>
       <div className={styles["pagenation"]}>
-        {!pageArray.includes(1) && (
+        {pageArray.length > 0 && !pageArray.includes(1) && (
           <WnacgLink
-            key={1}
+            key={"page1"}
             to={`/${pageType}/1`}
-            className={styles["page"] + " " + styles["first-page"]}
+            className={styles.page}
           >
             1
           </WnacgLink>
@@ -122,7 +123,7 @@ export const WNACG = ({ path }: props) => {
         )}
         {pageArray.map((v) => (
           <WnacgLink
-            key={v}
+            key={`page${v}`}
             to={`/${pageType}/${v}`}
             className={v === thisPage ? styles["this-page"] : styles["page"]}
           >
@@ -133,11 +134,11 @@ export const WNACG = ({ path }: props) => {
           pageArray[pageArray.length - 1] + 1 !== maxPage && (
             <span className={styles["skip-page"]}>・・・</span>
           )}
-        {!pageArray.includes(maxPage) && (
+        {pageArray.length > 0 && !pageArray.includes(maxPage) && (
           <WnacgLink
-            key={maxPage}
+            key={`page${maxPage}`}
             to={`/${pageType}/${maxPage}`}
-            className={styles["page"] + " " + styles["last-page"]}
+            className={styles.page}
           >
             {maxPage}
           </WnacgLink>
@@ -168,14 +169,14 @@ const download = async (e: React.MouseEvent) => {
       `SUCCESS 
       id: ${id} 
       title: ${title}`,
-      { className: "success-toast" }
+      { className: styles["success-toast"] }
     );
   } else {
     toast.error(
       `DL FAILED 
       id: ${id}
       title: ${title} ${response.data}`,
-      { className: "error-toast" }
+      { className: styles["error-toast"] }
     );
     console.error(`ダウンロードに失敗しました ${id} ${title} ${response.data}`);
   }
