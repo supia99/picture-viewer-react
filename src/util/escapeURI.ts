@@ -18,11 +18,14 @@ export const escapeURI = (str: string) => {
     { target: ">", to: "＞" },
     { target: ":", to: "：" },
     { target: "$", to: "＄" },
-    { target: "'", to: "" },
-    { target: "\*", to: "＊" },
+    { target: "*", to: "＊" },
     { target: ",", to: "" },
     { target: ";", to: "；" },
     { target: "=", to: "＝" },
+    { target: "|", to: "｜" },
+    { target: '"', to: "”" },
+    { target: "'", to: "’" },
+    { target: "/", to: "／" },
   ];
 
   return replaceTargetStrings.reduce(

@@ -31,6 +31,10 @@ export const WNACG = ({ path }: props) => {
     setPage(tmpPage);
     const requestUrl = `${url}/${tmpPageType}/${tmpPage}`;
     console.log(`url: ${requestUrl} pageType: ${tmpPageType} page: ${tmpPage}`);
+    
+    // Scroll to top when path changes
+    window.scrollTo(0, 0);
+    
     (async () => {
       const response = (await axios.get(requestUrl)) as {
         data: { data: WnacgObject[]; thisPage: number; maxPage: number };
