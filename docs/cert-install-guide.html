@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ローカル証明書(CA)の発行と Ubuntu / Windows / Android への登録方法</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f9fafb;
+      --panel: #ffffff;
+      --text: #111827;
+      --muted: #4b5563;
+      --border: #e5e7eb;
+      --code-bg: #f3f4f6;
+      --accent: #2563eb;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.75;
+    }
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+    h1, h2, h3 {
+      line-height: 1.4;
+      margin-top: 1.8em;
+      margin-bottom: 0.6em;
+    }
+    h1 { font-size: 2.2rem; }
+    h2 { font-size: 1.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
+    h3 { font-size: 1.2rem; }
+    p, li, blockquote {
+      color: var(--muted);
+    }
+    ul, ol {
+      padding-left: 1.5em;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.95em;
+      color: #111827;
+    }
+    a { color: var(--accent); }
+    blockquote {
+      border-left: 4px solid #d1d5db;
+      margin: 1em 0;
+      padding-left: 1em;
+      color: #374151;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 1em 0;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      text-align: left;
+      color: var(--muted);
+    }
+    th {
+      background: var(--code-bg);
+      color: var(--text);
+    }
+    .note {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 1em 0;
+      color: #1e3a8a;
+    }
+    .warn {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 1em 0;
+      color: #991b1b;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>ローカル証明書(CA)の発行と Ubuntu / Windows / Android への登録方法</h1>
+
+    <p>Ubuntu 上で mkcert を使ってローカル開発用の証明書を発行し、その CA(認証局)証明書を Ubuntu / Windows / Android の各端末に登録して、自己署名証明書を「保護された接続」として扱えるようにする手順をまとめます。</p>
+
+    <h2>0. 全体の考え方</h2>
+    <p>mkcert は次の2種類の証明書を扱います。</p>
+    <table>
+      <thead>
+        <tr><th>種類</th><th>ファイル</th><th>役割</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>ルートCA証明書</td><td><code>rootCA.pem</code></td><td>「このCAが署名した証明書は信頼してよい」という信頼の起点。<strong>各端末に1回登録する</strong></td></tr>
+        <tr><td>サーバー証明書</td><td><code>localhost+2.pem</code> など</td><td>実際に nginx / Vite に読み込ませる、ホスト名・IPごとの証明書</td></tr>
+      </tbody>
+    </table>
+    <p>各端末に登録するのは <strong>ルートCA証明書 (<code>rootCA.pem</code>) だけ</strong> です。これを一度登録しておけば、以降 mkcert で何度サーバー証明書を発行し直しても、端末側で再登録する必要はありません。</p>
+    <div class="warn">サーバー証明書 (<code>localhost+2.pem</code>) を CA として端末に登録しても機能しません。CA ではなく、単一サイト用の証明書だからです。</div>
+
+    <h2>1. Ubuntu で証明書を生成する</h2>
+
+    <h3>1.1. mkcert のインストール</h3>
+    <pre><code>sudo apt update
+sudo apt install -y curl ca-certificates libnss3-tools</code></pre>
+    <p><code>libnss3-tools</code> を入れておくと、<code>certutil</code> が使えるようになり、Chrome / Chromium の信頼ストア (NSS) への登録が自動化されます。</p>
+    <p>GitHub のリリースから mkcert 本体を取得します。</p>
+    <pre><code>mkdir -p /tmp/mkcert-install
+curl -fsSL -L https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64 -o /tmp/mkcert-install/mkcert
+chmod +x /tmp/mkcert-install/mkcert
+sudo install -m 0755 /tmp/mkcert-install/mkcert /usr/local/bin/mkcert</code></pre>
+    <div class="note">新しいバージョンが出ている場合は <code>v1.4.4</code> の部分を最新版に置き換えてください。</div>
+    <p>インストール確認:</p>
+    <pre><code>mkcert -h</code></pre>
+
+    <h3>1.2. ローカル CA を作成し、Ubuntu 自身に信頼登録する</h3>
+    <p><strong>必ず sudo を付けずに</strong>、一般ユーザー権限で実行します。</p>
+    <pre><code>mkcert -install</code></pre>
+    <div class="warn"><code>sudo mkcert -install</code> を実行すると、root ユーザー専用の別 CA が作られてしまい、一般ユーザーで動くブラウザから信頼されません。</div>
+    <p>これにより、次の場所に CA が作成されます。</p>
+    <pre><code>mkcert -CAROOT
+# 例: /home/&lt;user&gt;/.local/share/mkcert</code></pre>
+    <pre><code>rootCA.pem      # CA の公開証明書 (これを他端末に配る)
+rootCA-key.pem  # CA の秘密鍵 (絶対に配布しない)</code></pre>
+    <p>同時に、Chrome / Chromium が参照する NSS 共有DB (<code>~/.pki/nssdb</code>) にも登録されます。</p>
+    <pre><code>certutil -d sql:$HOME/.pki/nssdb -L | grep mkcert
+# 例: mkcert development CA ...   C,,</code></pre>
+    <p><code>C,,</code> は「SSL用のCAとして信頼する」という trust flag です。</p>
+
+    <h3>1.3. サーバー証明書を発行する</h3>
+    <p>公開したいホスト名・IP をすべて列挙して発行します。</p>
+    <pre><code>mkcert localhost 127.0.0.1 192.168.0.10</code></pre>
+    <pre><code>localhost+2.pem       # サーバー証明書
+localhost+2-key.pem   # サーバーの秘密鍵</code></pre>
+    <p>このファイルは nginx や Vite に読み込ませて使います(このドキュメントの対象外)。</p>
+
+    <h2>2. Ubuntu の別端末・別ユーザーに CA を登録する</h2>
+    <p>同じ CA を使う場合、Ubuntu の別ユーザーや別マシンでも <code>rootCA.pem</code> を配って登録できます。</p>
+
+    <h3>2.1. 証明書を転送する</h3>
+    <pre><code>cp "$(mkcert -CAROOT)/rootCA.pem" ~/rootCA.pem</code></pre>
+    <p>USB やクラウド共有などで転送先の端末に送ります。</p>
+
+    <h3>2.2. 転送先で NSS DB に登録する</h3>
+    <p>転送先にも <code>libnss3-tools</code> を入れます。</p>
+    <pre><code>sudo apt install -y libnss3-tools</code></pre>
+    <p>自分のユーザーの NSS DB (Chrome / Chromium が使用) に登録します。</p>
+    <pre><code>mkdir -p "$HOME/.pki/nssdb"
+certutil -d sql:$HOME/.pki/nssdb -A -t "C,," -n "mkcert (imported)" -i ~/rootCA.pem</code></pre>
+    <p>登録確認:</p>
+    <pre><code>certutil -d sql:$HOME/.pki/nssdb -L | grep mkcert</code></pre>
+    <p>Firefox は独自のプロファイルを使うため、<code>about:preferences#privacy</code> → 証明書を表示 → 認証局 → インポート、から同じ <code>rootCA.pem</code> を追加してください。</p>
+
+    <h2>3. Windows に CA を登録する</h2>
+
+    <h3>3.1. 証明書を転送する</h3>
+    <p>Ubuntu で作成した <code>rootCA.pem</code> を Windows 端末にコピーします(USB、クラウド共有、<code>scp</code> など)。</p>
+
+    <h3>3.2. 証明書ストアにインポートする</h3>
+    <p>GUI での手順:</p>
+    <ol>
+      <li><code>rootCA.pem</code> を右クリック → <strong>証明書のインストール</strong></li>
+      <li>保存場所は <strong>現在のユーザー</strong>(自分のブラウザだけで使う場合)、または <strong>ローカルコンピューター</strong>(端末全体・管理者権限が必要)</li>
+      <li><strong>証明書をすべて次のストアに配置する</strong> を選び、<strong>信頼されたルート証明機関</strong> を選択</li>
+      <li>完了 → 警告が出るので「はい」で承認</li>
+    </ol>
+    <p>PowerShell での手順(管理者権限):</p>
+    <pre><code>Import-Certificate -FilePath "C:\path\to\rootCA.pem" -CertStoreLocation Cert:\LocalMachine\Root</code></pre>
+    <p>現在のユーザーだけに登録する場合:</p>
+    <pre><code>Import-Certificate -FilePath "C:\path\to\rootCA.pem" -CertStoreLocation Cert:\CurrentUser\Root</code></pre>
+
+    <h3>3.3. 確認</h3>
+    <p><code>certmgr.msc</code> を開き、「信頼されたルート証明機関」→「証明書」に <code>mkcert development CA ...</code> という名前の証明書があれば登録完了です。</p>
+    <div class="note">Chrome / Edge は Windows の証明書ストアをそのまま参照するため、上記のインポートだけで両方のブラウザに反映されます。Firefox は独自ストアなので、Firefox の設定からも別途インポートが必要です。</div>
+
+    <h2>4. Android に CA を登録する</h2>
+
+    <h3>4.1. 証明書を転送する</h3>
+    <p><code>rootCA.pem</code> を Android 端末に転送します(USB、メール、クラウド共有など)。</p>
+
+    <h3>4.2. 証明書をインストールする</h3>
+    <ol>
+      <li>[設定] → [セキュリティとプライバシー] → [暗号化と認証情報]</li>
+      <li>[証明書をインストール] または [CA 証明書をインストール] をタップ</li>
+      <li>転送した <code>rootCA.pem</code> を選択</li>
+    </ol>
+
+    <h3>4.3. 種類は「CA証明書」を選ぶ</h3>
+    <p>選択肢が出る場合は、必ず次を選びます。</p>
+    <ul>
+      <li><strong>CA証明書</strong>(信頼できる認証局)</li>
+    </ul>
+    <div class="warn">「VPNとアプリ用」ではなく「CA証明書」を選ぶのがポイントです。「ユーザー証明書」を選んでしまうと、クライアント認証用として扱われ、ブラウザのサーバー証明書検証には使われません。</div>
+
+    <h3>4.4. 確認</h3>
+    <p>Android Chrome から、証明書に含めたホスト名・IPでアクセスします。</p>
+    <pre><code>https://192.168.0.10:4173</code></pre>
+    <p>鍵アイコンが表示され、警告が出なければ登録成功です。</p>
+    <div class="note">Android 7 (Nougat) 以降、多くのアプリはユーザーが追加したCAをデフォルトで信頼しません(WebView や一部アプリ)。ただし通常の Chrome ブラウザでの閲覧には影響しません。</div>
+
+    <h2>5. まとめ</h2>
+    <ol>
+      <li>Ubuntu で <code>mkcert -install</code>(sudoなし)してローカルCAを作成</li>
+      <li><code>mkcert &lt;ホスト名/IP...&gt;</code> でサーバー証明書を発行</li>
+      <li><code>rootCA.pem</code> だけを各端末(Ubuntu/Windows/Android)に配布</li>
+      <li>各端末で「CA証明書」として1回だけ登録</li>
+      <li>以降はサーバー証明書を何度発行し直しても、端末側の再登録は不要</li>
+    </ol>
+  </main>
+</body>
+</html>
