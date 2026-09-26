@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mkcert を使ったローカル HTTPS 証明書の発行と端末登録方法</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f9fafb;
+      --panel: #ffffff;
+      --text: #111827;
+      --muted: #4b5563;
+      --border: #e5e7eb;
+      --code-bg: #f3f4f6;
+      --accent: #2563eb;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.75;
+    }
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+    h1, h2, h3 {
+      line-height: 1.4;
+      margin-top: 1.8em;
+      margin-bottom: 0.6em;
+    }
+    h1 { font-size: 2.2rem; }
+    h2 { font-size: 1.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
+    h3 { font-size: 1.2rem; }
+    p, li, blockquote {
+      color: var(--muted);
+    }
+    ul, ol {
+      padding-left: 1.5em;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.95em;
+      color: #111827;
+    }
+    a { color: var(--accent); }
+    blockquote {
+      border-left: 4px solid #d1d5db;
+      margin: 1em 0;
+      padding-left: 1em;
+      color: #374151;
+    }
+    .note {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 1em 0;
+      color: #1e3a8a;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>mkcert を使ったローカル HTTPS 証明書の発行と端末登録方法</h1>
+
+    <p>このドキュメントでは、ローカル開発環境で HTTPS を有効にするために、mkcert を使って証明書を発行し、Ubuntu と Android 端末に登録する手順をまとめます。</p>
+
+    <h2>1. 概要</h2>
+    <p>Chrome などのブラウザでは、PWA や HTTPS が必要な機能を扱う際に証明書が必要です。ローカル開発では本番用の正式な証明書ではなく、自己署名証明書を使う方法がよく使われます。</p>
+    <p>mkcert はローカル開発用の証明書を簡単に作成できるツールです。</p>
+
+    <h2>2. mkcert のインストール</h2>
+    <p>Ubuntu では次の手順でインストールできます。</p>
+
+    <h3>2.1. 依存関係の確認</h3>
+    <pre><code>sudo apt update
+sudo apt install -y curl ca-certificates</code></pre>
+
+    <h3>2.2. mkcert のインストール</h3>
+    <p>GitHub のリリースにはバージョン付きのファイル名があり、<code>latest/download/mkcert-linux-amd64</code> という URL は正しくありません。実際の asset 名は <code>mkcert-v1.4.4-linux-amd64</code> のような形式です。</p>
+    <pre><code>mkdir -p /tmp/mkcert-install
+curl -fsSL -L https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64 -o /tmp/mkcert-install/mkcert
+chmod +x /tmp/mkcert-install/mkcert
+sudo install -m 0755 /tmp/mkcert-install/mkcert /usr/local/bin/mkcert</code></pre>
+    <div class="note">もし新しいバージョンが出ていれば、URL の <code>v1.4.4</code> と <code>mkcert-v1.4.4-linux-amd64</code> の部分を最新のバージョン名に置き換えてください。</div>
+
+    <h3>2.3. インストール確認</h3>
+    <pre><code>mkcert -h</code></pre>
+
+    <h2>3. ローカル証明書の発行</h2>
+    <p>ローカルの開発用ドメインを使う場合は、例えば <code>localhost</code> と <code>127.0.0.1</code> を証明書に含めます。</p>
+    <pre><code>mkcert localhost 127.0.0.1</code></pre>
+
+    <p>また、同じ LAN 上の Android 端末からアクセスする場合は、端末の IP アドレスやホスト名も含めると便利です。</p>
+    <pre><code>mkcert localhost 127.0.0.1 192.168.0.10</code></pre>
+
+    <p>この例では以下のファイルが生成されます。</p>
+    <pre><code>localhost+2.pem
+localhost+2-key.pem</code></pre>
+
+    <p>生成先は実行したカレントディレクトリです。</p>
+    <blockquote>例: <code>~/project</code> で実行した場合、<code>localhost+2.pem</code> と <code>localhost+2-key.pem</code> がそのディレクトリに作成されます。</blockquote>
+
+    <h2>4. Vite で HTTPS を使う</h2>
+    <p>開発サーバーやプレビューサーバーを HTTPS で起動するには、証明書のファイルを指定します。</p>
+
+    <h3>4.1. 開発サーバー</h3>
+    <pre><code>npm run dev -- --host 0.0.0.0 --https --cert localhost+2.pem --key localhost+2-key.pem</code></pre>
+
+    <h3>4.2. プレビューサーバー</h3>
+    <pre><code>npm run preview -- --host 0.0.0.0 --port 4173 --https --cert localhost+2.pem --key localhost+2-key.pem</code></pre>
+
+    <p>ブラウザでアクセスする場合は以下のような URL を使います。</p>
+    <pre><code>https://localhost:4173</code></pre>
+
+    <p>もし Android 端末から同一 LAN 内の PC へアクセスする場合は、PC の IP を使う形が必要になることがあります。</p>
+    <pre><code>https://192.168.0.10:4173</code></pre>
+
+    <h2>5. Ubuntu での証明書登録方法</h2>
+    <p>Ubuntu では、ローカルの CA をシステムに信頼させて、ブラウザが自己署名証明書を安全に扱えるようにする必要があります。</p>
+
+    <h3>5.1. mkcert でローカル CA を作成</h3>
+    <p>Linux で Chrome / Chromium を使う場合、<code>mkcert -install</code> だけでは不十分なことがあります。<code>libnss3-tools</code> が入っていないと、ブラウザが信頼済み CA として認識しない場合があります。</p>
+    <pre><code>sudo apt install -y libnss3-tools
+mkcert -install</code></pre>
+    <p>これで、ローカル証明書を発行した際に使う CA が Ubuntu のシステムとブラウザの信頼ストアに登録されます。</p>
+    <div class="note">もし <code>mkcert -install</code> の実行時に <code>certutil</code> が不足していると警告が出る場合は、上の <code>libnss3-tools</code> を入れてから再実行してください。</div>
+
+    <h3>5.2. 生成した証明書をブラウザで使う</h3>
+    <p><code>mkcert localhost 127.0.0.1</code> で作成した証明書は <code>localhost+2.pem</code> です。</p>
+    <p>Ubuntu の Chrome / Chromium の場合、ローカル CA を信頼済みにしていれば、その証明書は安全に扱われます。</p>
+
+    <h3>5.3. もし証明書が不正扱いされる場合</h3>
+    <p>次を確認してください。</p>
+    <ul>
+      <li><code>mkcert -install</code> を実行済みか</li>
+      <li>証明書が <code>localhost</code> に対して発行されているか</li>
+      <li>ブラウザがローカル CA を信頼しているか</li>
+    </ul>
+
+    <h2>6. Android での証明書登録方法</h2>
+    <p>Android は一般的に、ローカル開発用の自己署名証明書をそのまま信頼するには追加の手順が必要です。</p>
+
+    <h3>6.1. 証明書ファイルを端末へ転送</h3>
+    <p>PC 上で生成した証明書ファイルを Android に転送します。</p>
+    <pre><code>localhost+2.pem</code></pre>
+    <p>USB で転送するか、メールやクラウド共有で端末に送ります。</p>
+
+    <h3>6.2. Android で証明書を開く</h3>
+    <p>Android の設定で次をたどります。</p>
+    <ul>
+      <li>[設定] → [セキュリティとプライバシー] → [暗号化と認証情報]</li>
+      <li>[証明書をインストール] または [CA 証明書をインストール]</li>
+    </ul>
+    <p>その後、転送した証明書ファイルを選択します。</p>
+
+    <h3>6.3. 「ユーザー証明書」または「信頼できる認証局」を選択</h3>
+    <p>証明書の種類によって表示が変わりますが、通常は次のどちらかを選択します。</p>
+    <ul>
+      <li>信頼できる認証局</li>
+      <li>ユーザー証明書</li>
+    </ul>
+
+    <h3>6.4. 証明書をインストール</h3>
+    <p>端末側の指示に従ってインストールします。</p>
+
+    <h3>6.5. Android Chrome からアクセス</h3>
+    <p>次のような URL でアクセスできるようになります。</p>
+    <pre><code>https://192.168.0.10:4173</code></pre>
+    <p>または、PC の開発環境で <code>localhost</code> に対して割り当てているホスト名を使う方法もあります。</p>
+
+    <h2>7. Android の注意点</h2>
+    <p>Android では、次の条件に注意が必要です。</p>
+    <ul>
+      <li>自己署名証明書は通常「信頼済み CA として登録」しないとブラウザが拒否する</li>
+      <li>端末と PC が同一 LAN にあること</li>
+      <li>Android のブラウザがアクセス先を信頼していること</li>
+    </ul>
+    <p>一部の Android 端末では、OS のバージョンやブラウザのポリシーによって証明書の扱いが厳しくなります。</p>
+
+    <h2>8. 典型的な接続例</h2>
+    <p>PC 側で HTTPS サーバーを起動</p>
+    <pre><code>npm run preview -- --host 0.0.0.0 --port 4173 --https --cert localhost+2.pem --key localhost+2-key.pem</code></pre>
+
+    <p>Ubuntu からのアクセス</p>
+    <pre><code>https://localhost:4173</code></pre>
+
+    <p>Android からのアクセス</p>
+    <pre><code>https://192.168.0.10:4173</code></pre>
+
+    <h2>9. まとめ</h2>
+    <ol>
+      <li><code>mkcert</code> をインストールする</li>
+      <li>証明書を発行する</li>
+      <li>Vite で HTTPS を有効にする</li>
+      <li>Ubuntu では <code>mkcert -install</code> で CA を信頼する</li>
+      <li>Android では証明書をインストールして信頼する</li>
+    </ol>
+
+    <h2>10. 参考コマンド一覧</h2>
+    <pre><code># インストール
+mkcert -install
+
+# 証明書発行
+mkcert localhost 127.0.0.1 192.168.0.10
+
+# Vite 開発サーバー
+npm run dev -- --host 0.0.0.0 --https --cert localhost+2.pem --key localhost+2-key.pem
+
+# Vite プレビュー
+npm run preview -- --host 0.0.0.0 --port 4173 --https --cert localhost+2.pem --key localhost+2-key.pem</code></pre>
+  </main>
+</body>
+</html>
+
+<p>PC 側で HTTPS サーバーを起動</p>
+<p></p>
+<pre><code>
+npm run preview -- --host 0.0.0.0 --port 4173 --https --cert localhost+2.pem --key localhost+2-key.pem
+
+</pre>
+<p></p>
+<p>Ubuntu からのアクセス</p>
+<p></p>
+<pre><code>
+https://localhost:4173
+
+</pre>
+<p></p>
+<p>Android からのアクセス</p>
+<p></p>
+<pre><code>
+https://192.168.0.10:4173
+
+</pre>
+<p></p>
+<p>---</p>
+<p></p>
+<h2>9. まとめ</h2>
+<p></p>
+<p>ローカル HTTPS を使うための基本は次の通りです。</p>
+<p></p>
+<li>`mkcert` をインストールする</li>
+<li>証明書を発行する</li>
+<li>Vite で HTTPS を有効にする</li>
+<p>4. Ubuntu では `mkcert -install` で CA を信頼する</p>
+<p>5. Android では証明書をインストールして信頼する</p>
+<p></p>
+<p>これで、Chrome や Android ブラウザでローカルアプリのような動作確認がしやすくなります。</p>
+<p></p>
+<p>---</p>
+<p></p>
+<h2>10. 参考コマンド一覧</h2>
+<p></p>
+<pre><code>
+# インストール
+
+mkcert -install
+
+
+
+# 証明書発行
+
+mkcert localhost 127.0.0.1 192.168.0.10
+
+
+
+# Vite 開発サーバー
+
+npm run dev -- --host 0.0.0.0 --https --cert localhost+2.pem --key localhost+2-key.pem
+
+
+
+# Vite プレビュー
+
+npm run preview -- --host 0.0.0.0 --port 4173 --https --cert localhost+2.pem --key localhost+2-key.pem
+
+</pre>
+<p></p>
+<p>必要であれば次に、`package.json` に HTTPS 用の npm script を追加する例まで作成できます。</p>
+</body>
+</html>
