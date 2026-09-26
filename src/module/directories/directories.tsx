@@ -77,7 +77,7 @@ const isPicture = (files: File[]): boolean => {
   if (files.length === 0) {
     return false;
   }
-  const pictureFileExtensions = ["jpeg", "jpg", "png", "webp"];
+  const pictureFileExtensions = ["jpeg", "jpg", "png", "webp", "gif", "svg", "bmp", "tiff"];
   return (
     pictureFileExtensions.filter((pictureFileExtension) =>
       files[0].name.includes(pictureFileExtension)
